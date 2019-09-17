@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewChecked, AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import Chart from 'chart.js'
 
 @Component({
@@ -6,16 +6,21 @@ import Chart from 'chart.js'
   templateUrl: './block.component.html',
   styleUrls: ['./block.component.scss']
 })
-export class BlockComponent implements OnInit {
+export class BlockComponent implements AfterViewInit {
 
-  chartId = String(Math.floor(Math.random()* 100000));
+  chartId;
 
-  ngOnInit() {
-    const ctx = (document.getElementById('chart-uptime')as HTMLCanvasElement).getContext('2d');
+  constructor() {
+    this.chartId = String(Math.floor(Math.random()* 100000000));
+  }
+
+  ngAfterViewInit() {
+    console.log('aftervieww', this.chartId);
+    const ctx = (document.getElementById(`chart-${this.chartId}`)as HTMLCanvasElement).getContext('2d');
     new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+        // labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
         datasets: [
           {
             label: "Population (millions)",
@@ -25,10 +30,6 @@ export class BlockComponent implements OnInit {
         ]
       },
       options: {
-        title: {
-          display: true,
-          text: 'Predicted world population (millions) in 2050'
-        }
       }
     });
   }
