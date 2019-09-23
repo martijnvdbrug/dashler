@@ -1,0 +1,11 @@
+type Query {
+  Dashboard(id: ID!): Dashboard!
+}
+
+type Mutation {
+  createDashboard(input: DashboardInput): Dashboard
+}
+
+input DashboardInput {
+  name: String
+}

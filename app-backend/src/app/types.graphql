@@ -1,0 +1,42 @@
+scalar Date
+
+interface GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+}
+
+type Dashboard implements GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  name: String
+  blocks: [Block]
+}
+
+type Block implements GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  name: String
+  responseTime: ResponseTime
+  buttons: [Button!]
+}
+
+type ResponseTime implements GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  ms0_100: Int
+  ms100_500: Int
+  s1: Int
+  error: Int
+}
+
+type Button implements GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  label: String
+  url: String
+}
