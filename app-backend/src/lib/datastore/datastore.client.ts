@@ -4,6 +4,7 @@ import {entity} from '@google-cloud/datastore/build/src/entity';
 import {DatastoreEntity} from './model/datastore-entity';
 import {DatastoreQuery} from './model/datastore-query';
 import ICommitResponse = google.datastore.v1.ICommitResponse;
+import uuid = require('uuid/v1');
 
 export class DatastoreClient<T extends DatastoreEntity> {
 
@@ -27,7 +28,7 @@ export class DatastoreClient<T extends DatastoreEntity> {
       data: entity
     };
     await this.datastore.save(datastoreEntity);
-    return key.id;
+    return key.name;
   }
 
   /**
@@ -53,17 +54,16 @@ export class DatastoreClient<T extends DatastoreEntity> {
 
   /**
    * Retrieve complete entity by id
-   * @param entityId
    */
   async get(entityId: string): Promise<T> {
     const key = this.createKey(entityId);
     const [entity] = await this.datastore.get(key);
+    entity.id = entityId;
     return entity;
   }
 
   /**
    * Retrieve complete entity by id
-   * @param entityIds
    */
   async getMultiple(entityIds: string[]): Promise<T[]> {
     const keys = entityIds.map(id => this.createKey(id));
@@ -79,7 +79,6 @@ export class DatastoreClient<T extends DatastoreEntity> {
 
   /**
    * Deletes entity with key, does not check for existance
-   * @param entityId
    */
   async remove(entityId: string): Promise<void> {
     const key = this.createKey(entityId);
@@ -88,7 +87,6 @@ export class DatastoreClient<T extends DatastoreEntity> {
 
   /**
    * Check existance
-   * @param entityId
    */
   async exists(entityId: string): Promise<boolean> {
     const exists = await this.get(entityId);
@@ -103,6 +101,9 @@ export class DatastoreClient<T extends DatastoreEntity> {
   }
 
   createKey(id?: string): entity.Key {
+    if (!id) {
+      id = uuid();
+    }
     return this.datastore.key([this.kind, id]);
   }
 }

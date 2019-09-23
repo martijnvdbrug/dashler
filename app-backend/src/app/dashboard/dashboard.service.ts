@@ -11,19 +11,15 @@ export class DashboardService {
   }
 
   async get(id: string): Promise<Dashboard> {
-    return {
-      id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      name: 'Production',
-      blocks: []
-    };
+    const result = await this.repo.get(id);
+    return result;
   }
 
   async create(input: DashboardInput): Promise<Dashboard> {
     const id = await this.repo.save({
       name: input.name
     });
+    console.log('IDD', id);
     return this.get(id);
   }
 

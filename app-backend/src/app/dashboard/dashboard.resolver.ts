@@ -1,4 +1,4 @@
-import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
+import {Args, Mutation, Query, ResolveProperty, Resolver} from '@nestjs/graphql';
 import {Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
 import {DashboardService} from './dashboard.service';
 
