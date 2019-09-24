@@ -12,8 +12,11 @@ export class DashboardService {
   }
 
   async get(id: string): Promise<Dashboard> {
-    const result = await this.repo.get(id);
-    return result;
+    const dashboard = await this.repo.get(id);
+    if (!dashboard) {
+      throw Error(`Dashboard ${id} not found.`);
+    }
+    return dashboard;
   }
 
   async create(input: DashboardInput): Promise<Dashboard> {
@@ -25,9 +28,6 @@ export class DashboardService {
 
   async addBlock(dashboardId: string, input: BlockInput): Promise<Dashboard> {
     const dashboard = await this.get(dashboardId);
-    if (!dashboard) {
-      throw Error(`Dashboard ${dashboardId} not found.`);
-    }
     if (!Array.isArray(dashboard.blocks)) {
       dashboard.blocks = [];
     }

@@ -58,7 +58,9 @@ export class DatastoreClient<T extends DatastoreEntity> {
   async get(entityId: string): Promise<T> {
     const key = this.createKey(entityId);
     const [entity] = await this.datastore.get(key);
-    entity.id = entityId;
+    if (entity) {
+      entity.id = entityId;
+    }
     return entity;
   }
 
@@ -67,12 +69,12 @@ export class DatastoreClient<T extends DatastoreEntity> {
    */
   async getMultiple(entityIds: string[]): Promise<T[]> {
     const keys = entityIds.map(id => this.createKey(id));
-    let [entities] = await this.datastore.get(keys);
+    const [entities] = await this.datastore.get(keys);
     return entities;
   }
 
   async getAll(): Promise<T[]> {
-    let query = this.datastore.createQuery(this.kind);
+    const query = this.datastore.createQuery(this.kind);
     const [entities] = await this.datastore.runQuery(query);
     return entities;
   }

@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import {GraphqlClient} from './graphql.client';
+import {Injectable} from '@angular/core';
+import {Dashboard} from '../../../shared/graphql-types';
+import {getDashboardQuery} from './dashboard.queries';
+import { Apollo } from 'apollo-angular-boost';
 
 @Injectable({
   providedIn: 'root'
@@ -7,8 +9,18 @@ import {GraphqlClient} from './graphql.client';
 export class DashboardService {
 
   constructor(
-    private client: GraphqlClient
+    private apollo: Apollo
   ) {
-    console.log('bla', this.client.link);
+  }
+
+  async getDashboard(id: string): Promise<Dashboard> {
+    this.apollo.watchQuery({
+      query: getDashboardQuery,
+      variables: {id}
+    }).valueChanges
+      .subscribe(({ data}) => {
+        console.log('dashboard', data);
+      });
+    return undefined;
   }
 }

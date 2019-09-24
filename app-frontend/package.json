@@ -19,7 +19,7 @@
     "@angular/platform-browser": "~8.2.5",
     "@angular/platform-browser-dynamic": "~8.2.5",
     "@angular/router": "~8.2.5",
-    "apollo-boost": "^0.4.4",
+    "apollo-angular-boost": "^1.6.0",
     "chart.js": "^2.8.0",
     "graphql": "^14.5.7",
     "rxjs": "~6.4.0",
