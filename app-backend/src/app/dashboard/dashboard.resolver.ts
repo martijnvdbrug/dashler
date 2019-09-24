@@ -1,5 +1,5 @@
 import {Args, Mutation, Query, ResolveProperty, Resolver} from '@nestjs/graphql';
-import {Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
+import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
 import {DashboardService} from './dashboard.service';
 
 @Resolver('Dashboard')
@@ -18,6 +18,11 @@ export class DashboardResolver {
 
   @Mutation()
   async createDashboard(@Args('input') input: DashboardInput): Promise<Dashboard> {
+    return this.dashboardService.create(input);
+  }
+
+  @Mutation()
+  async addBlock(@Args('input') input: BlockInput): Promise<Dashboard> {
     return this.dashboardService.create(input);
   }
 

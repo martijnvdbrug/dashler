@@ -1,6 +1,7 @@
 import {AfterViewInit, Component} from '@angular/core';
-import Chart from 'chart.js'
+import Chart from 'chart.js';
 import {uuid} from '../../../lib/uuid';
+import {DashboardService} from '../../dashboard.service';
 
 @Component({
   selector: 'app-block',
@@ -13,12 +14,13 @@ export class BlockComponent implements AfterViewInit {
   chartId;
   chart: Chart;
 
-  constructor() {
+  constructor(
+    private dashboardService: DashboardService
+  ) {
     this.chartId = uuid();
   }
 
   ngAfterViewInit() {
-    console.log('aftervieww', this.chartId);
     const ctx = (document.getElementById(`chart-${this.chartId}`) as HTMLCanvasElement).getContext('2d');
     this.chart = new Chart(ctx, {
       type: 'doughnut',

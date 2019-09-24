@@ -1,6 +1,7 @@
 import {Inject, Injectable} from '@nestjs/common';
-import {Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
+import {Dashboard, DashboardInput, BlockInput} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
+import {DashboardAdapter} from './dashboard.adapter';
 
 @Injectable()
 export class DashboardService {
@@ -19,8 +20,20 @@ export class DashboardService {
     const id = await this.repo.save({
       name: input.name
     });
-    console.log('IDD', id);
     return this.get(id);
+  }
+
+  async addBlock(dashboardId: string, input: BlockInput): Promise<Dashboard> {
+    const dashboard = await this.get(dashboardId);
+    if (!dashboard) {
+      throw Error(`Dashboard ${dashboardId} not found.`);
+    }
+    if (!Array.isArray(dashboard.blocks)) {
+      dashboard.blocks = [];
+    }
+    dashboard.blocks.push(DashboardAdapter.toBlock(input));
+    await this.repo.save(dashboard);
+    return dashboard;
   }
 
 }

@@ -4,8 +4,19 @@ type Query {
 
 type Mutation {
   createDashboard(input: DashboardInput): Dashboard
+  addBlock(dashboardId: ID!, input: BlockInput): Dashboard
 }
 
 input DashboardInput {
   name: String
+}
+
+input BlockInput {
+  name: String
+  buttons: [ButtonInput]
+}
+
+input ButtonInput {
+  label: String
+  url: String
 }

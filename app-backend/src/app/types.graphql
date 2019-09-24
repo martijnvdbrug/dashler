@@ -11,6 +11,7 @@ type Dashboard implements GraphqlNode {
   createdAt: Date
   updatedAt: Date
   name: String
+  description: String
   blocks: [Block]
 }
 
