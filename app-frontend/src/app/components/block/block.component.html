@@ -12,7 +12,7 @@
         </div>
 
         <div class="col-auto">
-          <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+          <div class="icon icon-shape bg-gradient-primary text-white rounded-circle shadow">
             <i class="fas fa-atom"></i>
           </div>
         </div>
@@ -21,10 +21,12 @@
         <canvas id="chart-{{ chartId }}" class="chart-canvas"></canvas>
       </div>
       <div class="row">
-        <a *ngFor="let button of block.buttons"
-           href="{{ button.url }}"
-           class="btn btn-default full-width"
-           role="button" target="_blank">{{ button.label }}</a>
+        <div class="col">
+          <a *ngFor="let button of block.buttons"
+             href="{{ button.url }}"
+             class="btn btn-default full-width"
+             role="button" target="_blank">{{ button.label }}</a>
+        </div>
       </div>
 
 

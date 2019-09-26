@@ -30,6 +30,7 @@ type ResponseTime implements GraphqlNode {
   updatedAt: Date
   ms0_100: Int
   ms100_500: Int
+  ms500_1: Int
   s1: Int
   error: Int
 }

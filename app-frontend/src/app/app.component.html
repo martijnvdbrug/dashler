@@ -161,11 +161,63 @@
 
   <div class="container-fluid mt--7">
 
+    <button class="btn btn-icon btn-3 btn-secondary" type="button" data-toggle="modal" data-target="#addBlockModal">
+      <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+
+      <span class="btn-inner--text">Add block</span>
+
+    </button>
+
     <!-- Card stats -->
     <div class="row" *ngIf="dashboard$ | async; let dashboard">
 
-      <app-block *ngFor='let block of dashboard.blocks' [block]="block" ></app-block>
+      <app-block *ngFor='let block of dashboard.blocks' [block]="block"></app-block>
 
+    </div>
+
+    <!-- Add Block Modal -->
+    <div class="modal fade" id="addBlockModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add new block</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="blockName" placeholder="Block name">
+                  </div>
+                  <div class="form-group">
+                    <textarea class="form-control" id="blockDescription" rows="3"
+                              placeholder="What is the purpose/description of this block?"></textarea>
+                  </div>
+                </div>
+              </div>
+              <!-- BUTTONS -->
+              <div class="row" *ngFor="let i of [1, 2, 3]">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="button{{i}}Name" placeholder="Button{{i}} label">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <input type="url" class="form-control" id="button{{i}}Url" placeholder="http://your-service{{i}}/url">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Add</button>
+          </div>
+        </div>
+      </div>
     </div>
 
 

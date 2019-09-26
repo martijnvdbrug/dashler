@@ -25,16 +25,23 @@ export class BlockComponent implements AfterViewInit {
     this.chart = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        // labels: ['Africa', 'Asia', 'Europe', 'Latin America', 'North America'],
+        labels: ['0-100ms', '100-500ms', '500-1s', '>1s', 'Error'],
         datasets: [
           {
-            label: 'Population (millions)',
-            backgroundColor: ['#3e95cd', '#8e5ea2', '#3cba9f', '#e8c3b9', '#c45850'],
-            data: [2478, 5267, 734, 784, 433]
+            backgroundColor: ['#20c997',
+              '#1f8764',
+              '#118AB2',
+              '#073B4C',
+              '#e83e8c'],
+            data: [2478, 3000, 734, 784, 600]
           }
         ]
       },
-      options: {}
+      options: {
+        legend: {
+          display: false
+        }
+      }
     });
   }
 

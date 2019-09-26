@@ -7,6 +7,10 @@ import {InterfaceResolver} from './interface.resolver';
   imports: [
     GraphQLModule.forRoot({
       typePaths: ['./dist/**/*.graphql'],
+      formatError: (err) => {
+        console.error(err);
+        return err;
+      },
     }),
     DashboardModule,
   ],
