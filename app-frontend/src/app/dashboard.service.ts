@@ -18,6 +18,7 @@ export class DashboardService {
   getDashboard(id: string): Observable<Dashboard> {
     return this.apollo.watchQuery<any>({
       query: getDashboardQuery,
+      pollInterval: 1000 * 60,
       variables: {id}
     }).valueChanges
       .pipe(map(result => result.data.Dashboard));

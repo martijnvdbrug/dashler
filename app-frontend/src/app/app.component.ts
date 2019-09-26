@@ -19,10 +19,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.dashboard$ = this.dashboardService.getDashboard('d8baa7f0-dee1-11e9-b210-954ed90bb797');
-    interval(1000).subscribe(() => {
-      console.log('pollie');
-      this.dashboard$ = this.dashboardService.getDashboard('d8baa7f0-dee1-11e9-b210-954ed90bb797');
-    });
   }
 
 }
