@@ -1,7 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {Dashboard} from '../../../shared/graphql-types';
 import {getDashboardQuery} from './dashboard.queries';
 import { Apollo } from 'apollo-angular-boost';
+import {interval, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +15,13 @@ export class DashboardService {
   ) {
   }
 
-  async getDashboard(id: string): Promise<Dashboard> {
-    this.apollo.watchQuery({
+  getDashboard(id: string): Observable<Dashboard> {
+    return this.apollo.watchQuery<any>({
       query: getDashboardQuery,
       variables: {id}
     }).valueChanges
-      .subscribe(({ data}) => {
-        console.log('dashboard', data);
-      });
-    return undefined;
+      .pipe(map(result => result.data.Dashboard));
   }
+
+
 }

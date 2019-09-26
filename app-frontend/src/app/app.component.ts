@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import Chart from 'chart.js';
 import {DashboardService} from './dashboard.service';
+import {interval, Observable} from 'rxjs';
+import {Dashboard} from '../shared/graphql-types';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +10,19 @@ import {DashboardService} from './dashboard.service';
 })
 export class AppComponent implements OnInit {
   title = 'dashler';
+  dashboard$: Observable<Dashboard>;
 
   constructor(
     private dashboardService: DashboardService
-  ){}
+  ) {
+  }
 
   ngOnInit(): void {
-    this.dashboardService.getDashboard('d8baa7f0-dee1-11e9-b210-954ed90bb797');
+    this.dashboard$ = this.dashboardService.getDashboard('d8baa7f0-dee1-11e9-b210-954ed90bb797');
+    interval(1000).subscribe(() => {
+      console.log('pollie');
+      this.dashboard$ = this.dashboardService.getDashboard('d8baa7f0-dee1-11e9-b210-954ed90bb797');
+    });
   }
 
 }

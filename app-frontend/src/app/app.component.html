@@ -162,9 +162,9 @@
   <div class="container-fluid mt--7">
 
     <!-- Card stats -->
-    <div class="row">
+    <div class="row" *ngIf="dashboard$ | async; let dashboard">
 
-      <app-block *ngFor='let in of [0,1,2,3,4,5,6] ;let i = index' ></app-block>
+      <app-block *ngFor='let block of dashboard.blocks' [block]="block" ></app-block>
 
     </div>
 

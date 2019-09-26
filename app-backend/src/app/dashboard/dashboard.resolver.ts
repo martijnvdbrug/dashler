@@ -22,8 +22,8 @@ export class DashboardResolver {
   }
 
   @Mutation()
-  async addBlock(@Args('input') input: BlockInput): Promise<Dashboard> {
-    return this.dashboardService.create(input);
+  async addBlock(@Args('dashboardId') dashboardId: string, @Args('input') input: BlockInput): Promise<Dashboard> {
+    return this.dashboardService.addBlock(dashboardId, input);
   }
 
 }

@@ -7,7 +7,7 @@
             <span class="text-success mr-2">99%</span>
             <span class="text-nowrap">uptime</span>
           </p>
-          <span class="h2 font-weight-bold mb-0">User profile</span>
+          <span class="h2 font-weight-bold mb-0">{{ block.name }}</span>
 
         </div>
 
@@ -18,14 +18,14 @@
         </div>
       </div>
       <div class="row">
-        <canvas id="chart-{{chartId}}" class="chart-canvas"></canvas>
+        <canvas id="chart-{{ chartId }}" class="chart-canvas"></canvas>
       </div>
       <div class="row">
-          <button type="button" class="btn btn-default full-width">Playground</button>
-          <button type="button" class="btn btn-default full-width">Logs</button>
-          <button type="button" class="btn btn-default full-width">Bitbucket</button>
+        <a *ngFor="let button of block.buttons"
+           href="{{ button.url }}"
+           class="btn btn-default full-width"
+           role="button" target="_blank">{{ button.label }}</a>
       </div>
-
 
 
     </div>

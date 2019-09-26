@@ -1,7 +1,7 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, Input} from '@angular/core';
 import Chart from 'chart.js';
 import {uuid} from '../../../lib/uuid';
-import {DashboardService} from '../../dashboard.service';
+import {Block, Button} from '../../../shared/graphql-types';
 
 @Component({
   selector: 'app-block',
@@ -10,13 +10,13 @@ import {DashboardService} from '../../dashboard.service';
 })
 export class BlockComponent implements AfterViewInit {
 
+  @Input()
+  block: Block;
 
   chartId;
   chart: Chart;
 
-  constructor(
-    private dashboardService: DashboardService
-  ) {
+  constructor() {
     this.chartId = uuid();
   }
 
