@@ -7,6 +7,7 @@ import { BlockComponent } from './components/block/block.component';
 import {DashboardService} from './dashboard.service';
 import {APOLLO_BOOST_CONFIG, ApolloBoost, ApolloBoostModule} from 'apollo-angular-boost';
 import {HttpClientModule} from '@angular/common/http';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,9 @@ import {HttpClientModule} from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     ApolloBoostModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [
     DashboardService,

@@ -186,35 +186,35 @@
             </button>
           </div>
           <div class="modal-body">
-            <form>
+            <form [formGroup]="addBlockForm">
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group">
-                    <input type="text" class="form-control" id="blockName" placeholder="Block name">
+                    <input type="text" class="form-control" id="blockName" placeholder="Block name" formControlName="name">
                   </div>
-                  <div class="form-group">
+<!--                  <div class="form-group">
                     <textarea class="form-control" id="blockDescription" rows="3"
-                              placeholder="What is the purpose/description of this block?"></textarea>
-                  </div>
+                              placeholder="What is the purpose/description of this block?" formControlName="description"></textarea>
+                  </div>-->
                 </div>
               </div>
               <!-- BUTTONS -->
               <div class="row" *ngFor="let i of [1, 2, 3]">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <input type="text" class="form-control" id="button{{i}}Name" placeholder="Button{{i}} label">
+                    <input type="text" class="form-control" id="button{{i}}Name" placeholder="Button{{i}} label" formControlName="button{{i}}Label">
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <input type="url" class="form-control" id="button{{i}}Url" placeholder="http://your-service{{i}}/url">
+                    <input type="url" class="form-control" id="button{{i}}Url" placeholder="http://your-service{{i}}/url" formControlName="button{{i}}Url">
                   </div>
                 </div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Add</button>
+            <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="addBlock()">Add</button>
           </div>
         </div>
       </div>
