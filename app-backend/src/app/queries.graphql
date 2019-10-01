@@ -5,6 +5,7 @@ type Query {
 type Mutation {
   createDashboard(input: DashboardInput): Dashboard
   addBlock(dashboardId: ID!, input: BlockInput): Dashboard
+  removeBlock(dashboardId: ID!, blockId: ID!): Dashboard
 }
 
 input DashboardInput {

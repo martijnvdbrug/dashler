@@ -4,7 +4,7 @@ import {entity} from '@google-cloud/datastore/build/src/entity';
 import {DatastoreEntity} from './model/datastore-entity';
 import {DatastoreQuery} from './model/datastore-query';
 import ICommitResponse = google.datastore.v1.ICommitResponse;
-import uuid = require('uuid/v1');
+import shortid = require('shortid');
 
 export class DatastoreClient<T extends DatastoreEntity> {
 
@@ -104,7 +104,7 @@ export class DatastoreClient<T extends DatastoreEntity> {
 
   createKey(id?: string): entity.Key {
     if (!id) {
-      id = uuid();
+      id = shortid.generate();
     }
     return this.datastore.key([this.kind, id]);
   }

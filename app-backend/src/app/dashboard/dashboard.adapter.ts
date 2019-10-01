@@ -1,12 +1,12 @@
 import {Block, BlockInput, Button, ButtonInput} from '../../lib/shared/graphql-types';
-import uuid = require('uuid/v1');
+import shortid = require('shortid');
 
 export class DashboardAdapter {
 
   static toBlock(input: BlockInput): Block {
     const now = new Date();
     return {
-      id: uuid(),
+      id: shortid.generate(),
       createdAt: now,
       updatedAt: now,
       name: input.name,
@@ -18,7 +18,7 @@ export class DashboardAdapter {
     const now = new Date();
     return {
       ...input,
-      id: uuid(),
+      id: shortid.generate(),
       createdAt: now,
       updatedAt: now,
     };

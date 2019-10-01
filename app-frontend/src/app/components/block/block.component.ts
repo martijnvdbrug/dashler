@@ -2,6 +2,7 @@ import {AfterViewInit, Component, Input} from '@angular/core';
 import Chart from 'chart.js';
 import {uuid} from '../../../lib/uuid';
 import {Block, Button} from '../../../shared/graphql-types';
+import {DashboardService} from '../../dashboard.service';
 
 @Component({
   selector: 'app-block',
@@ -12,11 +13,13 @@ export class BlockComponent implements AfterViewInit {
 
   @Input()
   block: Block;
+  @Input()
+  dashboardId: string;
 
   chartId;
   chart: Chart;
 
-  constructor() {
+  constructor(private dashboardService: DashboardService) {
     this.chartId = uuid();
   }
 
@@ -43,6 +46,10 @@ export class BlockComponent implements AfterViewInit {
         }
       }
     });
+  }
+
+  async removeBlock(): Promise<void> {
+    await this.dashboardService.removeBlock(this.dashboardId, this.block.id);
   }
 
 }

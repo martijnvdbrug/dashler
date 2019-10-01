@@ -1,18 +1,22 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { BlockComponent } from './components/block/block.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {BlockComponent} from './components/block/block.component';
 import {DashboardService} from './dashboard.service';
-import {APOLLO_BOOST_CONFIG, ApolloBoost, ApolloBoostModule} from 'apollo-angular-boost';
+import {APOLLO_BOOST_CONFIG, ApolloBoostModule} from 'apollo-angular-boost';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {DashboardPage} from './pages/dashboard/dashboard.page';
+import {LoginPage} from './pages/login/login.page';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BlockComponent
+    BlockComponent,
+    DashboardPage,
+    LoginPage
   ],
   imports: [
     BrowserModule,
@@ -35,4 +39,5 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

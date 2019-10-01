@@ -26,4 +26,9 @@ export class DashboardResolver {
     return this.dashboardService.addBlock(dashboardId, input);
   }
 
+  @Mutation()
+  async removeBlock(@Args('dashboardId') dashboardId: string, @Args('blockId') blockId: string): Promise<Dashboard> {
+    return this.dashboardService.removeBlock(dashboardId, blockId);
+  }
+
 }

@@ -36,4 +36,13 @@ export class DashboardService {
     return dashboard;
   }
 
+  async removeBlock(dashboardId: string, blockId: string): Promise<Dashboard> {
+    const dashboard = await this.get(dashboardId);
+    if (Array.isArray(dashboard.blocks)) {
+      dashboard.blocks = dashboard.blocks.filter(block => block.id !== blockId);
+      await this.repo.save(dashboard);
+    }
+    return dashboard;
+  }
+
 }

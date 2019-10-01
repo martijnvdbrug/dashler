@@ -43,3 +43,11 @@ export const addBlockMutation = gql`
             ...dashboardFields
         }
     }`;
+
+export const removeBlockMutation = gql`
+    ${dashboardFields}
+    mutation removeBlock($dashboardId: ID!, $blockId: ID!) {
+        removeBlock(dashboardId: $dashboardId, blockId: $blockId) {
+            ...dashboardFields
+        }
+    }`;
