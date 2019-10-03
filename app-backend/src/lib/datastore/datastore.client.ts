@@ -3,8 +3,8 @@ import {google} from '@google-cloud/datastore/build/proto/datastore';
 import {entity} from '@google-cloud/datastore/build/src/entity';
 import {DatastoreEntity} from './model/datastore-entity';
 import {DatastoreQuery} from './model/datastore-query';
-import ICommitResponse = google.datastore.v1.ICommitResponse;
 import shortid = require('shortid');
+import ICommitResponse = google.datastore.v1.ICommitResponse;
 
 export class DatastoreClient<T extends DatastoreEntity> {
 
@@ -22,7 +22,10 @@ export class DatastoreClient<T extends DatastoreEntity> {
   async save(entity: Partial<T>): Promise<string> {
     entity.createdAt = new Date();
     entity.updatedAt = new Date();
-    const key = entity.id ? this.createKey(entity.id) : this.createKey();
+    if (!entity.id) {
+      entity.id = shortid.generate();
+    }
+    const key = this.createKey(entity.id);
     const datastoreEntity = {
       key,
       data: entity
@@ -102,10 +105,7 @@ export class DatastoreClient<T extends DatastoreEntity> {
     return entities;
   }
 
-  createKey(id?: string): entity.Key {
-    if (!id) {
-      id = shortid.generate();
-    }
+  createKey(id: string): entity.Key {
     return this.datastore.key([this.kind, id]);
   }
 }

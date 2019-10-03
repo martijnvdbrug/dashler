@@ -54,6 +54,7 @@ export interface Dashboard extends GraphqlNode {
 export interface IMutation {
     createDashboard(input?: DashboardInput): Dashboard | Promise<Dashboard>;
     addBlock(dashboardId: string, input?: BlockInput): Dashboard | Promise<Dashboard>;
+    removeBlock(dashboardId: string, blockId: string): Dashboard | Promise<Dashboard>;
 }
 
 export interface IQuery {
@@ -69,4 +70,13 @@ export interface ResponseTime extends GraphqlNode {
     ms500_1?: number;
     s1?: number;
     error?: number;
+}
+
+export interface User extends GraphqlNode {
+    id: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    firstname?: string;
+    familyname?: string;
+    picture?: string;
 }

@@ -42,3 +42,12 @@ type Button implements GraphqlNode {
   label: String
   url: String
 }
+
+type User implements GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  firstname: String
+  familyname: String
+  picture: String
+}

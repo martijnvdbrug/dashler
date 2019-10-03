@@ -18,9 +18,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   }
 
 
-  async validate(request: any, accessToken: string, refreshToken: string, profile, done: Function) {
+  async validate(request: any, accessToken: string, refreshToken: string, profile, done: Function, more) {
     try {
       console.log('success', profile);
+      console.log('success', more);
       const jwt = 'placeholderJWT';
       const user = {jwt};
       done(null, user);
