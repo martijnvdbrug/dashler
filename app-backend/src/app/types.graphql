@@ -52,4 +52,5 @@ type User implements GraphqlNode {
   firstname: String
   familyname: String
   picture: String
+  dashboards: [Dashboard]
 }

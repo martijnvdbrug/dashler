@@ -58,7 +58,8 @@ export interface IMutation {
 }
 
 export interface IQuery {
-    Dashboard(id: string): Dashboard | Promise<Dashboard>;
+    Dashboard(id?: string): Dashboard | Promise<Dashboard>;
+    Me(): User | Promise<User>;
 }
 
 export interface ResponseTime extends GraphqlNode {
@@ -81,4 +82,5 @@ export interface User extends GraphqlNode {
     firstname?: string;
     familyname?: string;
     picture?: string;
+    dashboards?: Dashboard[];
 }

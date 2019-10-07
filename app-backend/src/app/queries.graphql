@@ -1,13 +1,16 @@
+directive @authenticated on FIELD_DEFINITION
+
 type Query {
-  Dashboard(id: ID!): Dashboard!
+  # Get dashboard by ID. Gets first Dashboard if no ID given.
+  Dashboard(id: ID): Dashboard! @authenticated
   # Get the currently logged in User.
-  Me: User
+  Me: User @authenticated
 }
 
 type Mutation {
-  createDashboard(input: DashboardInput): Dashboard
-  addBlock(dashboardId: ID!, input: BlockInput): Dashboard
-  removeBlock(dashboardId: ID!, blockId: ID!): Dashboard
+  createDashboard(input: DashboardInput): Dashboard @authenticated
+  addBlock(dashboardId: ID!, input: BlockInput): Dashboard @authenticated
+  removeBlock(dashboardId: ID!, blockId: ID!): Dashboard @authenticated
 }
 
 input DashboardInput {

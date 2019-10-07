@@ -1,4 +1,4 @@
-import {Args, Mutation, Query, ResolveProperty, Resolver} from '@nestjs/graphql';
+import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
 import {DashboardService} from './dashboard.service';
 
@@ -11,23 +11,32 @@ export class DashboardResolver {
   }
 
   @Query('Dashboard')
-  async getDashboard(@Args('id') id: string): Promise<Dashboard> {
-    return this.dashboardService.get(id);
+  async getDashboard(@Args('id') id: string, @Context('email') email: string): Promise<Dashboard> {
+    if (!id) {
+      return this.dashboardService.getFirstForUser(email);
+    }
+    return this.dashboardService.get(id, email);
   }
 
 
   @Mutation()
-  async createDashboard(@Args('input') input: DashboardInput): Promise<Dashboard> {
-    return this.dashboardService.create(input);
+  async createDashboard(@Args('input') input: DashboardInput, @Context('email') email: string): Promise<Dashboard> {
+    return this.dashboardService.create(input, email);
   }
 
   @Mutation()
-  async addBlock(@Args('dashboardId') dashboardId: string, @Args('input') input: BlockInput): Promise<Dashboard> {
+  async addBlock(
+    @Args('dashboardId') dashboardId: string,
+    @Args('input') input: BlockInput,
+    @Context('email') email: string): Promise<Dashboard> {
     return this.dashboardService.addBlock(dashboardId, input);
   }
 
   @Mutation()
-  async removeBlock(@Args('dashboardId') dashboardId: string, @Args('blockId') blockId: string): Promise<Dashboard> {
+  async removeBlock(
+    @Args('dashboardId') dashboardId: string,
+    @Args('blockId') blockId: string,
+    @Context('email') email: string): Promise<Dashboard> {
     return this.dashboardService.removeBlock(dashboardId, blockId);
   }
 

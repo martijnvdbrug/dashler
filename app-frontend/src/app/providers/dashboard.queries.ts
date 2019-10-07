@@ -30,7 +30,7 @@ export const dashboardFields = gql`
 
 export const getDashboardQuery = gql`
     ${dashboardFields}
-    query DashBoard($id: ID!) {
+    query DashBoard($id: ID) {
         Dashboard(id: $id){
             ...dashboardFields
         }

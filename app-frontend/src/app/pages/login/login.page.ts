@@ -19,7 +19,7 @@ export class LoginPage implements OnInit {
 
   ngOnInit(): void {
     this.route.pathFromRoot[1].url.subscribe(val => {
-      if (val[1].path === 'error') {
+      if (val[1] && val[1].path === 'error') {
         this.error = 'Unable to login, please try again';
       }
     });

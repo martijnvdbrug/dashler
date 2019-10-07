@@ -14,6 +14,9 @@ import {UserEntity} from './model/user.entity';
       provide: 'UserRepo',
       useValue: new DatastoreClient<UserEntity>('User')
     }
+  ],
+  exports: [
+    AuthService
   ]
 })
 export class AuthModule {}

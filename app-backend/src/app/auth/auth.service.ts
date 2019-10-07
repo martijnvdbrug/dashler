@@ -3,7 +3,6 @@ import {UserEntity} from './model/user.entity';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {UserInput} from './model/user.input';
 import * as jwt from 'jsonwebtoken';
-import shortid = require('shortid');
 import {JwtPayload} from '../../lib/shared/jwt.payload';
 import {CONFIG} from '../../lib/config/config';
 
@@ -15,11 +14,24 @@ export class AuthService {
   ) {
   }
 
-  async login(email: string): Promise<string> {
+  static decode(tokenOrHeader: string): JwtPayload {
+    if (tokenOrHeader && tokenOrHeader.toLowerCase().startsWith('bearer ')) {
+      tokenOrHeader = tokenOrHeader.replace('bearer ', '');
+      tokenOrHeader = tokenOrHeader.replace('Bearer ', '');
+    }
+    return jwt.verify(tokenOrHeader, CONFIG.jwtSecret, {ignoreExpiration: false}) as JwtPayload;
+  }
+
+  async get(email: string): Promise<UserEntity> {
     const user = this.userRepo.get(email);
     if (!user) {
-      throw Error(`User ${email} doesn't exist, please sign up first.`);
+      throw Error(`User ${email} doesn't exist`);
     }
+    return user;
+  }
+
+  async login(email: string): Promise<string> {
+    const user = await this.get(email);
     await this.userRepo.save({
       ...user,
       lastLogin: new Date()
@@ -50,16 +62,24 @@ export class AuthService {
     return this.generateJWT(user.email);
   }
 
+  async addDashboard(email: string, dashboardId: string): Promise<boolean> {
+    const user = await this.get(email);
+    if (!user.dashboardIds || !Array.isArray(user.dashboardIds)) {
+      user.dashboardIds = [];
+    }
+    user.dashboardIds.push(dashboardId);
+    await this.userRepo.save(user);
+    return true;
+  }
+
   private generateJWT(email: string): string {
-    const expiresIn = 30 * 24 * 60 * 60 * 1000;
     const payload: JwtPayload = {
       email,
       iat: Date.now()
     };
     return jwt.sign(payload, CONFIG.jwtSecret, {
-      expiresIn
+      expiresIn: 30 * 24 * 60 * 60 * 1000
     });
   }
-
 
 }

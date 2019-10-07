@@ -1,28 +1,59 @@
-import {Inject, Injectable} from '@nestjs/common';
-import {Dashboard, DashboardInput, BlockInput} from '../../lib/shared/graphql-types';
+import {ForbiddenException, Inject, Injectable} from '@nestjs/common';
+import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
+import {DashboardEntity} from './model/dashboard.entity';
+import {readableId} from '../../lib/readable-id';
+import {AuthService} from '../auth/auth.service';
+
 
 @Injectable()
 export class DashboardService {
 
+
   constructor(
-    @Inject('DashboardRepo') private repo: DatastoreClient<Dashboard>
+    private authService: AuthService,
+    @Inject('DashboardRepo') private repo: DatastoreClient<DashboardEntity>
   ) {
   }
 
-  async get(id: string): Promise<Dashboard> {
+  /**
+   * Gets dashboard by id. Validates if it belongs to email if an emailAddress is given.
+   */
+  async get(id: string, email?: string): Promise<Dashboard> {
     const dashboard = await this.repo.get(id);
     if (!dashboard) {
       throw Error(`Dashboard ${id} not found.`);
     }
-    return dashboard;
+    if (!email) {
+      return dashboard;
+    }
+    if (dashboard.users && dashboard.users.indexOf(email) > -1) {
+      return dashboard;
+    }
+    throw new ForbiddenException(`You are not allowed to view this dashboard`);
   }
 
-  async create(input: DashboardInput): Promise<Dashboard> {
-    const id = await this.repo.save({
-      name: input.name
-    });
+  async getFirstForUser(email: string): Promise<Dashboard> {
+    const user = await this.authService.get(email);
+    return this.repo.get(user.dashboardIds[0]);
+  }
+
+  async getForUser(email: string): Promise<Dashboard[]> {
+    const user = await this.authService.get(email);
+    return await this.repo.getMultiple(user.dashboardIds);
+  }
+
+  async create(input: DashboardInput, email: string): Promise<Dashboard> {
+    const id = readableId(input.name);
+    await Promise.all([
+      this.repo.save({
+        id,
+        name: input.name,
+        users: [email]
+      }),
+      this.authService.addDashboard(email, id)
+    ]);
     return this.get(id);
   }
 

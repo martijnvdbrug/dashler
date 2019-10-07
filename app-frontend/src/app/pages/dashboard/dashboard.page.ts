@@ -1,4 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
 import {DashboardService} from '../../providers/dashboard.service';
 import {Observable} from 'rxjs';
 import {ButtonInput, Dashboard} from '../../../../../shared/graphql-types';
@@ -26,14 +27,18 @@ export class DashboardPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private location: Location
   ) {
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.dashboard$ = this.dashboardService.getDashboard(params.get('id'));
-      this.dashboardId = params.get('id');
+      this.dashboard$.subscribe(d => {
+        this.dashboardId = d.id;
+        this.location.go(`/dashboard/${d.id}`);
+      });
     });
   }
 
