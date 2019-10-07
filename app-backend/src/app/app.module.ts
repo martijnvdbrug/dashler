@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
+import {Module} from '@nestjs/common';
+import {GraphQLModule} from '@nestjs/graphql';
 import {DashboardModule} from './dashboard/dashboard.module';
 import {InterfaceResolver} from './interface.resolver';
 import {AuthModule} from './auth/auth.module';
@@ -20,4 +20,5 @@ import {AuthModule} from './auth/auth.module';
     InterfaceResolver
   ]
 })
-export class AppModule {}
+export class AppModule {
+}

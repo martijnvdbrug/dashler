@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DashboardService} from '../../dashboard.service';
+import {DashboardService} from '../../providers/dashboard.service';
 import {Observable} from 'rxjs';
 import {ButtonInput, Dashboard} from '../../../../../shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';

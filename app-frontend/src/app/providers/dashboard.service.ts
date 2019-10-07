@@ -1,10 +1,9 @@
-import {Injectable, OnInit} from '@angular/core';
-import {Dashboard} from '../../../shared/graphql-types';
+import {Injectable} from '@angular/core';
+import {BlockInput, Dashboard} from '../../../../shared/graphql-types';
 import {addBlockMutation, getDashboardQuery, removeBlockMutation} from './dashboard.queries';
-import { Apollo } from 'apollo-angular-boost';
-import {interval, Observable} from 'rxjs';
+import {Apollo} from 'apollo-angular-boost';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {BlockInput} from '../shared/graphql-types';
 
 @Injectable()
 export class DashboardService {

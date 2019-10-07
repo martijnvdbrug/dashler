@@ -22,6 +22,7 @@
     "apollo-angular-boost": "^1.6.0",
     "chart.js": "^2.8.0",
     "graphql": "^14.5.7",
+    "jwt-decode": "^2.2.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
@@ -33,6 +34,7 @@
     "@angular/language-service": "~8.2.5",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/jwt-decode": "^2.2.1",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
     "jasmine-core": "~3.4.0",

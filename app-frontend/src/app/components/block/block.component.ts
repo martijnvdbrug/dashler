@@ -2,7 +2,7 @@ import {AfterViewInit, Component, Input} from '@angular/core';
 import Chart from 'chart.js';
 import {uuid} from '../../../lib/uuid';
 import {Block, Button} from '../../../shared/graphql-types';
-import {DashboardService} from '../../dashboard.service';
+import {DashboardService} from '../../providers/dashboard.service';
 
 @Component({
   selector: 'app-block',

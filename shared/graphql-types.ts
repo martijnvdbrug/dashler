@@ -76,6 +76,8 @@ export interface User extends GraphqlNode {
     id: string;
     createdAt?: Date;
     updatedAt?: Date;
+    lastLogin?: Date;
+    email?: string;
     firstname?: string;
     familyname?: string;
     picture?: string;

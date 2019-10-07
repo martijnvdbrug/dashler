@@ -1,5 +1,7 @@
 type Query {
   Dashboard(id: ID!): Dashboard!
+  # Get the currently logged in User.
+  Me: User
 }
 
 type Mutation {

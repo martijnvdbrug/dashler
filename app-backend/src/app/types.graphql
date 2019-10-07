@@ -47,6 +47,8 @@ type User implements GraphqlNode {
   id: ID!
   createdAt: Date
   updatedAt: Date
+  lastLogin: Date
+  email: String
   firstname: String
   familyname: String
   picture: String
