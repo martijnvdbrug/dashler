@@ -20,3 +20,17 @@ export const getMeQuery = gql`
         }
     }`;
 
+export const getMeWithDashboardQuery = gql`
+    ${userFields}
+    query Me {
+        Me {
+            ...userFields
+            dashboards {
+                id
+                name
+                createdAt
+                updatedAt
+            }
+        }
+    }`;
+

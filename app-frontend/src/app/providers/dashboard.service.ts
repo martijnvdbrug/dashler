@@ -4,16 +4,18 @@ import {addBlockMutation, getDashboardQuery, removeBlockMutation} from './dashbo
 import {Apollo} from 'apollo-angular-boost';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {UserService} from './user.service';
 
 @Injectable()
 export class DashboardService {
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private userService: UserService
   ) {
   }
 
-  getDashboard(id: string): Observable<Dashboard> {
+  get(id: string): Observable<Dashboard> {
     return this.apollo.watchQuery<any>({
       query: getDashboardQuery,
       pollInterval: 1000 * 60,

@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {ButtonInput, Dashboard} from '../../../../../shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+import {UserService} from '../../providers/user.service';
 
 @Component({
   selector: 'dashboard-page',
@@ -28,13 +29,14 @@ export class DashboardPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private dashboardService: DashboardService,
+    private userService: UserService,
     private location: Location
   ) {
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.dashboard$ = this.dashboardService.getDashboard(params.get('id'));
+      this.dashboard$ = this.dashboardService.get(params.get('id'));
       this.dashboard$.subscribe(d => {
         this.dashboardId = d.id;
         this.location.go(`/dashboard/${d.id}`);

@@ -2,7 +2,7 @@ import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterState
 import {Observable} from 'rxjs';
 import {Injectable, OnInit} from '@angular/core';
 import * as jwt_decode from 'jwt-decode';
-import {JwtPayload} from '../../shared/jwt.payload';
+import {JwtPayload} from '../../lib/shared/jwt.payload';
 import {UserService} from '../providers/user.service';
 
 @Injectable()
