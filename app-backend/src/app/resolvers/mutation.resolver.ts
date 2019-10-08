@@ -1,23 +1,16 @@
-import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql';
-import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
-import {DashboardService} from './dashboard.service';
+import {Args, Context, Mutation, Parent, Query, ResolveProperty, Resolver} from '@nestjs/graphql';
+import {BlockInput, Dashboard, DashboardInput, User} from '../../lib/shared/graphql-types';
+import {DashboardService} from '../dashboard/dashboard.service';
+import {Injectable} from '@nestjs/common';
+import {AuthService} from '../auth/auth.service';
 
-@Resolver('Dashboard')
-export class DashboardResolver {
+@Injectable()
+export class MutationResolver {
 
   constructor(
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
   ) {
   }
-
-  @Query('Dashboard')
-  async getDashboard(@Args('id') id: string, @Context('email') email: string): Promise<Dashboard> {
-    if (!id) {
-      return this.dashboardService.getFirstForUser(email);
-    }
-    return this.dashboardService.get(id, email);
-  }
-
 
   @Mutation()
   async createDashboard(@Args('input') input: DashboardInput, @Context('email') email: string): Promise<Dashboard> {

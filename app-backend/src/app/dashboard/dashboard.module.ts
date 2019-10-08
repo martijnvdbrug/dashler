@@ -1,5 +1,4 @@
 import {Module} from '@nestjs/common';
-import {DashboardResolver} from './dashboard.resolver';
 import {DashboardService} from './dashboard.service';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {Dashboard} from '../../lib/shared/graphql-types';
@@ -11,12 +10,14 @@ import {AuthModule} from '../auth/auth.module';
     AuthModule,
   ],
   providers: [
-    DashboardResolver,
     DashboardService,
     {
       provide: 'DashboardRepo',
       useValue: new DatastoreClient<DashboardEntity>('Dashboard')
     }
+  ],
+  exports: [
+    DashboardService
   ]
 })
 export class DashboardModule {

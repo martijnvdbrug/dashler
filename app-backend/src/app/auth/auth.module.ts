@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import {Module} from '@nestjs/common';
+import {AuthController} from './auth.controller';
+import {AuthService} from './auth.service';
 import {GoogleStrategy} from './google.strategy';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {UserEntity} from './model/user.entity';
@@ -19,4 +19,5 @@ import {UserEntity} from './model/user.entity';
     AuthService
   ]
 })
-export class AuthModule {}
+export class AuthModule {
+}

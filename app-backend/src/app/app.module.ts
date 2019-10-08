@@ -4,6 +4,9 @@ import {DashboardModule} from './dashboard/dashboard.module';
 import {InterfaceResolver} from './interface.resolver';
 import {AuthModule} from './auth/auth.module';
 import {AuthenticatedDirective} from './auth/authenticated.directive';
+import {UserResolver} from './resolvers/user.resolver';
+import {QueryResolver} from './resolvers/query.resolver';
+import {MutationResolver} from './resolvers/mutation.resolver';
 
 @Module({
   imports: [
@@ -26,7 +29,10 @@ import {AuthenticatedDirective} from './auth/authenticated.directive';
     AuthModule,
   ],
   providers: [
-    InterfaceResolver
+    InterfaceResolver,
+    QueryResolver,
+    MutationResolver,
+    UserResolver,
   ]
 })
 export class AppModule {
