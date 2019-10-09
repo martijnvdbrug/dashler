@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {UserService} from '../../providers/user.service';
 
 @Component({
   selector: 'login-handler',
@@ -12,19 +13,14 @@ export class LoginHandler implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    private userService: UserService
   ) {
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const jwt = params.get('jwt');
-      if (jwt) {
-        localStorage.setItem('token', jwt);
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.router.navigate(['/login/error']);
-      }
+      this.userService.login(jwt);
     });
   }
 

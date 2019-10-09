@@ -84,4 +84,8 @@ export class DashboardPage implements OnInit {
     return this.dashboardId === id;
   }
 
+  logout() {
+    this.userService.logout();
+  }
+
 }

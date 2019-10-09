@@ -1,34 +1,27 @@
 import {Injectable} from '@angular/core';
 import {JwtPayload} from '../../lib/shared/jwt.payload';
-import {Dashboard, User} from '../../lib/shared/graphql-types';
+import {User} from '../../lib/shared/graphql-types';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {getMeQuery, getMeWithDashboardQuery} from './user.queries';
 import {Apollo} from 'apollo-angular-boost';
+import {Router} from '@angular/router';
+import * as jwt_decode from 'jwt-decode';
 
 @Injectable()
 export class UserService {
 
-  private jwt: JwtPayload;
+  private decodedJwt: JwtPayload;
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private router: Router
   ) {
   }
 
-  setJwtPayload(jwt: JwtPayload): void {
-    this.jwt = jwt;
-  }
-
-  getJwtPayload(): JwtPayload {
-    if (this.jwt) {
-      return this.jwt;
-    }
-  }
-
   getEmail(): string {
-    if (this.jwt) {
-      return this.jwt.email;
+    if (this.decodedJwt) {
+      return this.decodedJwt.email;
     }
   }
 
@@ -44,6 +37,26 @@ export class UserService {
       query: getMeWithDashboardQuery,
     }).valueChanges
       .pipe(map(result => result.data.Me));
+  }
+
+  logout() {
+    this.decodedJwt = undefined;
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
+  login(token: string) {
+    if (token) {
+      this.decodedJwt = jwt_decode(token);
+      localStorage.setItem('token', token);
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/login/error']);
+    }
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
   }
 
 }
