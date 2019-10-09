@@ -6,6 +6,8 @@ import {ButtonInput, Dashboard} from '../../../../../shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../providers/user.service';
+import {User} from '../../../lib/shared/graphql-types';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'dashboard-page',
@@ -15,6 +17,11 @@ import {UserService} from '../../providers/user.service';
 export class DashboardPage implements OnInit {
 
   dashboard$: Observable<Dashboard>;
+  /**
+   * AllDashboards only incudes names and ID's in this context
+   */
+  allDashboards$: Observable<Dashboard[]>;
+  user$: Observable<User>;
   dashboardId: string;
   addBlockForm = new FormGroup({
     name: new FormControl(),
@@ -42,6 +49,8 @@ export class DashboardPage implements OnInit {
         this.location.go(`/dashboard/${d.id}`);
       });
     });
+    this.user$ = this.userService.getMeWithDasboards();
+    this.allDashboards$ = this.user$.pipe(map(user => user.dashboards));
   }
 
   async addBlock(): Promise<void> {
@@ -69,6 +78,10 @@ export class DashboardPage implements OnInit {
       buttons
     });
     this.addBlockForm.reset();
+  }
+
+  isActive(id: string): boolean {
+    return this.dashboardId === id;
   }
 
 }

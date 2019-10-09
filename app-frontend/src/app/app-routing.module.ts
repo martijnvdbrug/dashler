@@ -7,6 +7,7 @@ import {LoginHandler} from './pages/login/login.handler';
 
 
 const routes: Routes = [
+  {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
   {path: 'login/success/:jwt', component: LoginHandler},
   {path: 'login/error', component: LoginPage},
   {path: 'login', component: LoginPage},

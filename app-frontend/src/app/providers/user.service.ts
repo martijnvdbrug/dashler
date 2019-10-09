@@ -39,11 +39,11 @@ export class UserService {
       .pipe(map(result => result.data.getMe));
   }
 
-  getMyDashboards(): Observable<Dashboard[]> {
+  getMeWithDasboards(): Observable<User> {
     return this.apollo.watchQuery<any>({
       query: getMeWithDashboardQuery,
     }).valueChanges
-      .pipe(map(result => result.data.getMe.dashboards));
+      .pipe(map(result => result.data.Me));
   }
 
 }
