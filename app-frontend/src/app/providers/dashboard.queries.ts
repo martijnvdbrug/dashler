@@ -1,4 +1,4 @@
-import {gql} from 'apollo-angular-boost';
+import gql from 'graphql-tag';
 
 export const dashboardFields = gql`
     fragment dashboardFields on Dashboard {

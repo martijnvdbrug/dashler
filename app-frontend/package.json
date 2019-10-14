@@ -23,6 +23,7 @@
     "apollo-angular-boost": "^1.6.0",
     "chart.js": "^2.8.0",
     "graphql": "^14.5.7",
+    "graphql-tag": "^2.10.1",
     "jwt-decode": "^2.2.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",

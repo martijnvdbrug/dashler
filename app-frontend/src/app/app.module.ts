@@ -4,7 +4,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BlockComponent} from './components/block/block.component';
 import {DashboardService} from './providers/dashboard.service';
-import {APOLLO_BOOST_CONFIG, ApolloBoostModule} from 'apollo-angular-boost';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DashboardPage} from './pages/dashboard/dashboard.page';
@@ -13,6 +12,7 @@ import {LoginHandler} from './pages/login/login.handler';
 import {AuthGuard} from './guards/auth.guard';
 import {UserService} from './providers/user.service';
 import {environment} from '../environments/environment';
+import {ApolloBoostModule, APOLLO_BOOST_CONFIG, ApolloBoost} from 'apollo-angular-boost';
 
 @NgModule({
   declarations: [
@@ -34,7 +34,7 @@ import {environment} from '../environments/environment';
     AuthGuard,
     DashboardService,
     UserService,
-    {
+/*    {
       provide: APOLLO_BOOST_CONFIG,
       useFactory() {
         return {
@@ -49,9 +49,24 @@ import {environment} from '../environments/environment';
           }
         };
       }
-    }
+    }*/
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
+  constructor(apolloBoost: ApolloBoost) {
+      apolloBoost.create({
+        uri: `${environment.authServer}/graphql`,
+        request: async (operation) => {
+          const token = localStorage.getItem('token');
+          operation.setContext({
+            headers: {
+              authorization: token ? `Bearer ${token}` : ''
+            }
+          });
+        }
+      });
+
+  }
 }

@@ -1,17 +1,15 @@
 import {Injectable} from '@angular/core';
 import {BlockInput, Dashboard} from '../../../../shared/graphql-types';
 import {addBlockMutation, getDashboardQuery, removeBlockMutation} from './dashboard.queries';
-import {Apollo} from 'apollo-angular-boost';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {UserService} from './user.service';
+import {Apollo} from 'apollo-angular-boost';
 
 @Injectable()
 export class DashboardService {
 
   constructor(
     private apollo: Apollo,
-    private userService: UserService
   ) {
   }
 
@@ -21,7 +19,7 @@ export class DashboardService {
       pollInterval: 1000 * 60,
       variables: {id}
     }).valueChanges
-      .pipe(map(result => result.data.Dashboard));
+      .pipe(map((result: any) => result.data.Dashboard));
   }
 
   async addBlock(dashboardId: string, input: BlockInput): Promise<Dashboard> {
