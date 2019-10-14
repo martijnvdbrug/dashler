@@ -1,6 +1,6 @@
 import {ForbiddenException, forwardRef, Inject, Injectable} from '@nestjs/common';
 import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
-import {DatastoreClient} from '../../lib/datastore/datastore.client';
+import {DatastoreClient} from '../../lib/shared/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
 import {readableId} from '../../lib/readable-id';
@@ -70,6 +70,22 @@ export class DashboardService {
       throw new MaxBlocksException(`You are only allowed to have ${plan.maxBlocks} blocks in you dashboard.`);
     }
     dashboard.blocks.push(DashboardAdapter.toBlock(input));
+    await this.repo.save(dashboard);
+    return dashboard;
+  }
+
+  async addUser(dashboardId: string, emailToAdd: string, loggedInUserEmail: string): Promise<DashboardEntity> {
+    const [{plan}, dashboard]: [UserEntity, DashboardEntity] = await Promise.all([
+      this.userService.get(loggedInUserEmail),
+      this.get(dashboardId)
+    ]);
+    if (!Array.isArray(dashboard.users)) {
+      dashboard.users = [];
+    }
+    if (dashboard.users.length >= plan.maxMembers) {
+      throw new MaxBlocksException(`You are only allowed to have ${plan.maxBlocks} blocks in you dashboard.`);
+    }
+    dashboard.users.push(emailToAdd);
     await this.repo.save(dashboard);
     return dashboard;
   }

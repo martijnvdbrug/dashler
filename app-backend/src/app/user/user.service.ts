@@ -1,7 +1,7 @@
 import {forwardRef, Inject, Injectable} from '@nestjs/common';
 import {UserEntity} from './model/user.entity';
 import {UserInput} from './model/user.input';
-import {DatastoreClient} from '../../lib/datastore/datastore.client';
+import {DatastoreClient} from '../../lib/shared/datastore/datastore.client';
 import {AuthUtil} from './auth.util';
 import {DashboardService} from '../dashboard/dashboard.service';
 import {Plan} from '../../lib/shared/graphql-types';
@@ -92,7 +92,7 @@ export class UserService {
       maxBlocks: 9,
       maxDashboards: 1,
       maxUptimeInterval: 15,
-      maxMembers: 5,
+      maxMembers: 1,
     };
   }
 
