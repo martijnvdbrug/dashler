@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {DashboardService} from '../../providers/dashboard.service';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {ButtonInput, Dashboard} from '../../../../../shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../providers/user.service';
 import {User} from '../../../lib/shared/graphql-types';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 
 @Component({
   selector: 'dashboard-page',
@@ -50,6 +50,10 @@ export class DashboardPage implements OnInit {
       });
     });
     this.user$ = this.userService.getMeWithDasboards();
+    this.user$.pipe(catchError((e) => {
+      this.logout();
+      return Observable.throw(`Error getting User with dashboards`, e);
+    }));
     this.allDashboards$ = this.user$.pipe(map(user => user.dashboards));
   }
 

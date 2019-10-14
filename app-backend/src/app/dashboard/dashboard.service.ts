@@ -1,4 +1,4 @@
-import {ForbiddenException, Inject, Injectable} from '@nestjs/common';
+import {ForbiddenException, forwardRef, Inject, Injectable} from '@nestjs/common';
 import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
@@ -10,9 +10,8 @@ import {UserService} from '../user/user.service';
 @Injectable()
 export class DashboardService {
 
-
   constructor(
-    private userService: UserService,
+    @Inject(forwardRef(() => UserService)) private userService: UserService,
     @Inject('DashboardRepo') private repo: DatastoreClient<DashboardEntity>
   ) {
   }

@@ -1,4 +1,4 @@
-import {Context, Parent, Query, ResolveProperty, Resolver} from '@nestjs/graphql';
+import {Context, ResolveProperty, Resolver} from '@nestjs/graphql';
 import {Dashboard, User} from '../../lib/shared/graphql-types';
 import {DashboardService} from '../dashboard/dashboard.service';
 

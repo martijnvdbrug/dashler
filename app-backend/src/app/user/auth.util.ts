@@ -1,4 +1,4 @@
-import {JwtPayload} from '../../../../shared/jwt.payload';
+import {JwtPayload} from '../../lib/shared/jwt.payload';
 import * as jwt from 'jsonwebtoken';
 import {CONFIG} from '../../lib/config/config';
 

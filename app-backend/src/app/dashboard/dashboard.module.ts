@@ -7,7 +7,7 @@ import {UserModule} from '../user/user.module';
 
 @Module({
   imports: [
-    UserModule,
+    UserModule
   ],
   providers: [
     DashboardService,

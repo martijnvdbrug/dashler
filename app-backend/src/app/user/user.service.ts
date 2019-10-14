@@ -1,14 +1,16 @@
-import {Inject, Injectable} from '@nestjs/common';
+import {forwardRef, Inject, Injectable} from '@nestjs/common';
 import {UserEntity} from './model/user.entity';
 import {UserInput} from './model/user.input';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {AuthUtil} from './auth.util';
+import {DashboardService} from '../dashboard/dashboard.service';
 
 @Injectable()
 export class UserService {
 
   constructor(
-    @Inject('UserRepo') private userRepo: DatastoreClient<UserEntity>
+    @Inject('UserRepo') private userRepo: DatastoreClient<UserEntity>,
+    @Inject(forwardRef(() => DashboardService)) private dashboardService: DashboardService
   ) {
   }
 
@@ -16,6 +18,9 @@ export class UserService {
     if (!input.email) {
       throw Error(`Cannot signup user without email. Given: ${JSON.stringify(input)}`);
     }
+    const dashboard = await this.dashboardService.create({
+      name: 'My dashboard'
+    }, input.email);
     const user: UserEntity = {
       id: input.email,
       email: input.email,
@@ -26,7 +31,7 @@ export class UserService {
       picture: input.picture,
       lastLogin: new Date(),
       provider: input.provider,
-      dashboardIds: []
+      dashboardIds: [dashboard.id]
     };
     await this.userRepo.save(user);
     return user;
