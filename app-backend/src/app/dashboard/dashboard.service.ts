@@ -1,12 +1,13 @@
 import {ForbiddenException, forwardRef, Inject, Injectable} from '@nestjs/common';
-import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
-import {DatastoreClient} from '../../lib/shared/datastore/datastore.client';
+import {BlockInput, Dashboard, DashboardInput, Uptime} from '../../lib/shared/graphql-types';
+import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
 import {readableId} from '../../lib/readable-id';
 import {UserService} from '../user/user.service';
 import {UserEntity} from '../user/model/user.entity';
 import {MaxBlocksException} from './max-blocks.exception';
+import normalizeUrl = require('normalize-url');
 
 
 @Injectable()
@@ -14,7 +15,8 @@ export class DashboardService {
 
   constructor(
     @Inject(forwardRef(() => UserService)) private userService: UserService,
-    @Inject('DashboardRepo') private repo: DatastoreClient<DashboardEntity>
+    @Inject('DashboardRepo') private dashboardRepo: DatastoreClient<DashboardEntity>,
+    @Inject('UptimeRepo') private uptimeRepo: DatastoreClient<Uptime>
   ) {
   }
 
@@ -22,7 +24,7 @@ export class DashboardService {
    * Gets dashboard by id. Validates if it belongs to email if an emailAddress is given.
    */
   async get(id: string, email?: string): Promise<DashboardEntity> {
-    const dashboard = await this.repo.get(id);
+    const dashboard = await this.dashboardRepo.get(id);
     if (!dashboard) {
       throw Error(`Dashboard ${id} not found.`);
     }
@@ -37,18 +39,18 @@ export class DashboardService {
 
   async getFirstForUser(email: string): Promise<DashboardEntity> {
     const user = await this.userService.get(email);
-    return this.repo.get(user.dashboardIds[0]);
+    return this.dashboardRepo.get(user.dashboardIds[0]);
   }
 
   async getForUser(email: string): Promise<Dashboard[]> {
     const user = await this.userService.get(email);
-    return await this.repo.getMultiple(user.dashboardIds);
+    return await this.dashboardRepo.getMultiple(user.dashboardIds);
   }
 
   async create(input: DashboardInput, email: string): Promise<DashboardEntity> {
     const id = readableId(input.name);
     await Promise.all([
-      this.repo.save({
+      this.dashboardRepo.save({
         id,
         name: input.name,
         users: [email]
@@ -70,7 +72,10 @@ export class DashboardService {
       throw new MaxBlocksException(`You are only allowed to have ${plan.maxBlocks} blocks in you dashboard.`);
     }
     dashboard.blocks.push(DashboardAdapter.toBlock(input));
-    await this.repo.save(dashboard);
+    await Promise.all([
+      this.createUptime(input.url),
+      this.dashboardRepo.save(dashboard)
+    ]);
     return dashboard;
   }
 
@@ -86,17 +91,44 @@ export class DashboardService {
       throw new MaxBlocksException(`You are only allowed to have ${plan.maxBlocks} blocks in you dashboard.`);
     }
     dashboard.users.push(emailToAdd);
-    await this.repo.save(dashboard);
+    await this.dashboardRepo.save(dashboard);
     return dashboard;
   }
 
   async removeBlock(dashboardId: string, blockId: string): Promise<DashboardEntity> {
     const dashboard = await this.get(dashboardId);
-    if (Array.isArray(dashboard.blocks)) {
-      dashboard.blocks = dashboard.blocks.filter(block => block.id !== blockId);
-      await this.repo.save(dashboard);
+    if (!Array.isArray(dashboard.blocks)) {
+      return dashboard;
     }
+    const block = dashboard.blocks.find(b => b.id === blockId);
+    if (block) {
+      await this.removeUptime(block.url);
+    }
+    dashboard.blocks = dashboard.blocks.filter(b => b.id !== blockId);
+    await this.dashboardRepo.save(dashboard);
     return dashboard;
+  }
+
+  async createUptime(url: string): Promise<Uptime> {
+    if (await this.uptimeRepo.exists(url)) {
+      return this.uptimeRepo.get(url);
+    }
+    const uptime: Uptime = {
+      id: normalizeUrl(url),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      checkEvery: 30
+    };
+    await this.uptimeRepo.save(uptime);
+    return undefined;
+  }
+
+  async removeUptime(url: string): Promise<boolean> {
+    if (!url) {
+      return false;
+    }
+    await this.uptimeRepo.remove(normalizeUrl(url));
+    return true;
   }
 
 }

@@ -12,7 +12,8 @@ export const dashboardFields = gql`
             createdAt
             updatedAt
             name
-            responseTime {
+            url
+            uptime {
                 id
                 createdAt
                 updatedAt

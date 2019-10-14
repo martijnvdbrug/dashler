@@ -168,23 +168,22 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group">
-                    <input type="text" class="form-control" id="blockName" placeholder="Block name" formControlName="name">
+                    <input type="text" class="form-control" id="blockName" placeholder="Name" formControlName="name">
                   </div>
-                  <!--                  <div class="form-group">
-                                      <textarea class="form-control" id="blockDescription" rows="3"
-                                                placeholder="What is the purpose/description of this block?" formControlName="description"></textarea>
-                                    </div>-->
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="blockUrl" placeholder="Url" formControlName="url">
+                  </div>
                 </div>
               </div>
               <!-- BUTTONS -->
               <div class="row" *ngFor="let i of [1, 2, 3]">
-                <div class="col-md-6">
+                <div class="col-6">
                   <div class="form-group">
                     <input type="text" class="form-control" id="button{{i}}Name" placeholder="Button{{i}} label"
                            formControlName="button{{i}}Label">
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                   <div class="form-group">
                     <input type="url" class="form-control" id="button{{i}}Url" placeholder="http://your-service{{i}}/url"
                            formControlName="button{{i}}Url">

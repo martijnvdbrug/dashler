@@ -7,6 +7,7 @@
 /* tslint:disable */
 export interface BlockInput {
     name?: string;
+    url?: string;
     buttons?: ButtonInput[];
 }
 
@@ -30,7 +31,8 @@ export interface Block extends GraphqlNode {
     createdAt?: Date;
     updatedAt?: Date;
     name?: string;
-    responseTime?: ResponseTime;
+    url?: string;
+    uptime?: Uptime;
     buttons?: Button[];
 }
 
@@ -72,10 +74,11 @@ export interface IQuery {
     Me(): User | Promise<User>;
 }
 
-export interface ResponseTime extends GraphqlNode {
+export interface Uptime extends GraphqlNode {
     id: string;
     createdAt?: Date;
     updatedAt?: Date;
+    checkEvery?: number;
     ms0_100?: number;
     ms100_500?: number;
     ms500_1?: number;

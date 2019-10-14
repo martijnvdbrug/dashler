@@ -20,14 +20,16 @@ type Block implements GraphqlNode {
   createdAt: Date
   updatedAt: Date
   name: String
-  responseTime: ResponseTime
+  url: String
+  uptime: Uptime
   buttons: [Button!]
 }
 
-type ResponseTime implements GraphqlNode {
+type Uptime implements GraphqlNode {
   id: ID!
   createdAt: Date
   updatedAt: Date
+  checkEvery: Int
   ms0_100: Int
   ms100_500: Int
   ms500_1: Int

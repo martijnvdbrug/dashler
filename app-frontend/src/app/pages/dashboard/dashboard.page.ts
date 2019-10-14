@@ -27,6 +27,7 @@ export class DashboardPage implements OnInit {
   subscriptionMessage: string;
   addBlockForm = new FormGroup({
     name: new FormControl(),
+    url: new FormControl(),
     button1Label: new FormControl(),
     button1Url: new FormControl(),
     button2Label: new FormControl(),
@@ -78,6 +79,7 @@ export class DashboardPage implements OnInit {
     try {
       await this.dashboardService.addBlock(this.dashboardId, {
         name: this.addBlockForm.value.name,
+        url: this.addBlockForm.value.url,
         buttons
       });
       this.addBlockForm.reset();
