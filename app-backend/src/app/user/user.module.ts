@@ -1,14 +1,15 @@
 import {Module} from '@nestjs/common';
 import {AuthController} from './auth.controller';
-import {AuthService} from './auth.service';
 import {GoogleStrategy} from './google.strategy';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {UserEntity} from './model/user.entity';
+import {UserService} from './user.service';
 
 @Module({
   controllers: [AuthController],
   providers: [
-    AuthService,
+    UserService,
+    UserService,
     GoogleStrategy,
     {
       provide: 'UserRepo',
@@ -16,8 +17,9 @@ import {UserEntity} from './model/user.entity';
     }
   ],
   exports: [
-    AuthService
+    UserService,
+    UserService
   ]
 })
-export class AuthModule {
+export class UserModule {
 }

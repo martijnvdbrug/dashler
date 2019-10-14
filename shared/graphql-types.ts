@@ -57,6 +57,16 @@ export interface IMutation {
     removeBlock(dashboardId: string, blockId: string): Dashboard | Promise<Dashboard>;
 }
 
+export interface Plan extends GraphqlNode {
+    id: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    maxDashboards?: number;
+    maxBlocks?: number;
+    maxUptimeInterval?: number;
+    maxMembers?: number;
+}
+
 export interface IQuery {
     Dashboard(id?: string): Dashboard | Promise<Dashboard>;
     Me(): User | Promise<User>;

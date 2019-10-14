@@ -3,14 +3,14 @@ import {PassportStrategy} from '@nestjs/passport';
 import {Strategy} from 'passport-google-oauth20';
 import {CONFIG} from '../../lib/config/config';
 import {GoogleUser} from './model/google.user';
-import {AuthService} from './auth.service';
+import {UserService} from './user.service';
 
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   constructor(
-    private authService: AuthService
+    private userService: UserService
   ) {
     super({
       clientID: CONFIG.goolgeClientId,     // <- Replace this with your client id
@@ -24,7 +24,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   async validate(request: any, accessToken: string, refreshToken: string, profile: GoogleUser, done: (err: any, obj: any) => void) {
     try {
       console.log(`User logged in with Google: ${profile._json.email}`);
-      const jwt = await this.authService.signUpOrLogin({
+      const jwt = await this.userService.signUpOrLogin({
         email: profile._json.email,
         picture: profile._json.picture,
         firstname: profile._json.given_name,

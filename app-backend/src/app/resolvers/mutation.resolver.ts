@@ -1,8 +1,7 @@
-import {Args, Context, Mutation, Parent, Query, ResolveProperty, Resolver} from '@nestjs/graphql';
-import {BlockInput, Dashboard, DashboardInput, User} from '../../lib/shared/graphql-types';
+import {Args, Context, Mutation} from '@nestjs/graphql';
+import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
 import {DashboardService} from '../dashboard/dashboard.service';
 import {Injectable} from '@nestjs/common';
-import {AuthService} from '../auth/auth.service';
 
 @Injectable()
 export class MutationResolver {

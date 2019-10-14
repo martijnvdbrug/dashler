@@ -53,4 +53,15 @@ type User implements GraphqlNode {
   familyname: String
   picture: String
   dashboards: [Dashboard]
+  plan: Plan
+}
+
+type Plan implements GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  maxDashboards: Int
+  maxBlocks: Int
+  maxUptimeInterval: Int
+  maxMembers: Int
 }

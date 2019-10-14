@@ -1,7 +1,7 @@
 import {SchemaDirectiveVisitor} from 'graphql-tools';
 import {defaultFieldResolver} from 'graphql';
 import {AuthenticationError} from 'apollo-server-errors';
-import {AuthService} from './auth.service';
+import {AuthUtil} from './auth.util';
 
 export class AuthenticatedDirective extends SchemaDirectiveVisitor {
 
@@ -10,7 +10,7 @@ export class AuthenticatedDirective extends SchemaDirectiveVisitor {
     field.resolve = async function (...args) {
       try {
         const token = args[2].token;
-        const decoded = AuthService.decode(token);
+        const decoded = AuthUtil.decodeJWT(token);
         if (!decoded || !decoded.email) {
           throw Error(`Could no get email from decoded jwt: ${JSON.stringify(decoded)}`);
         }

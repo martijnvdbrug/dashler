@@ -2,8 +2,8 @@ import {Module} from '@nestjs/common';
 import {GraphQLModule} from '@nestjs/graphql';
 import {DashboardModule} from './dashboard/dashboard.module';
 import {InterfaceResolver} from './interface.resolver';
-import {AuthModule} from './auth/auth.module';
-import {AuthenticatedDirective} from './auth/authenticated.directive';
+import {UserModule} from './user/user.module';
+import {AuthenticatedDirective} from './user/authenticated.directive';
 import {UserResolver} from './resolvers/user.resolver';
 import {QueryResolver} from './resolvers/query.resolver';
 import {MutationResolver} from './resolvers/mutation.resolver';
@@ -19,16 +19,16 @@ import {MutationResolver} from './resolvers/mutation.resolver';
       schemaDirectives: {
         authenticated: AuthenticatedDirective
       },
-      context: ({ req }) => {
+      context: ({req}) => {
         // get the user token from the headers
         const token = req.headers.authorization || '';
-        return { token };
+        return {token};
       },
       introspection: true,
       playground: true
     }),
     DashboardModule,
-    AuthModule,
+    UserModule,
   ],
   providers: [
     InterfaceResolver,

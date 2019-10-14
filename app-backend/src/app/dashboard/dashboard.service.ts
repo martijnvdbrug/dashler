@@ -4,7 +4,7 @@ import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
 import {readableId} from '../../lib/readable-id';
-import {AuthService} from '../auth/auth.service';
+import {UserService} from '../user/user.service';
 
 
 @Injectable()
@@ -12,7 +12,7 @@ export class DashboardService {
 
 
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     @Inject('DashboardRepo') private repo: DatastoreClient<DashboardEntity>
   ) {
   }
@@ -35,12 +35,12 @@ export class DashboardService {
   }
 
   async getFirstForUser(email: string): Promise<Dashboard> {
-    const user = await this.authService.get(email);
+    const user = await this.userService.get(email);
     return this.repo.get(user.dashboardIds[0]);
   }
 
   async getForUser(email: string): Promise<Dashboard[]> {
-    const user = await this.authService.get(email);
+    const user = await this.userService.get(email);
     return await this.repo.getMultiple(user.dashboardIds);
   }
 
@@ -52,7 +52,7 @@ export class DashboardService {
         name: input.name,
         users: [email]
       }),
-      this.authService.addDashboard(email, id)
+      this.userService.addDashboard(email, id)
     ]);
     return this.get(id);
   }

@@ -1,29 +1,42 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {UserEntity} from './model/user.entity';
-import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {UserInput} from './model/user.input';
-import * as jwt from 'jsonwebtoken';
-import {JwtPayload} from '../../lib/shared/jwt.payload';
-import {CONFIG} from '../../lib/config/config';
+import {DatastoreClient} from '../../lib/datastore/datastore.client';
+import {AuthUtil} from './auth.util';
 
 @Injectable()
-export class AuthService {
+export class UserService {
 
   constructor(
     @Inject('UserRepo') private userRepo: DatastoreClient<UserEntity>
   ) {
   }
 
-  static decode(tokenOrHeader: string): JwtPayload {
-    if (tokenOrHeader && tokenOrHeader.toLowerCase().startsWith('bearer ')) {
-      tokenOrHeader = tokenOrHeader.replace('bearer ', '');
-      tokenOrHeader = tokenOrHeader.replace('Bearer ', '');
+  async create(input: UserInput): Promise<UserEntity> {
+    if (!input.email) {
+      throw Error(`Cannot signup user without email. Given: ${JSON.stringify(input)}`);
     }
-    return jwt.verify(tokenOrHeader, CONFIG.jwtSecret, {ignoreExpiration: false}) as JwtPayload;
+    const user: UserEntity = {
+      id: input.email,
+      email: input.email,
+      firstname: input.firstname,
+      familyname: input.familyname,
+      locale: input.locale,
+      originId: input.originId,
+      picture: input.picture,
+      lastLogin: new Date(),
+      provider: input.provider,
+      dashboardIds: []
+    };
+    await this.userRepo.save(user);
+    return user;
   }
 
   async get(email: string): Promise<UserEntity> {
-    const user = this.userRepo.get(email);
+    if (!email) {
+      throw Error(`Need email to get a user`);
+    }
+    const user = await this.userRepo.get(email);
     if (!user) {
       throw Error(`User ${email} doesn't exist`);
     }
@@ -36,7 +49,7 @@ export class AuthService {
       ...user,
       lastLogin: new Date()
     });
-    return this.generateJWT(email);
+    return AuthUtil.generateJWT(email);
   }
 
   /**
@@ -49,17 +62,8 @@ export class AuthService {
     if (await this.userRepo.exists(user.email)) {
       return this.login(user.email);
     }
-    await this.userRepo.save({
-      id: user.email,
-      email: user.email,
-      firstname: user.firstname,
-      familyname: user.familyname,
-      locale: user.locale,
-      originId: user.originId,
-      picture: user.picture,
-      lastLogin: new Date()
-    });
-    return this.generateJWT(user.email);
+    await this.create(user);
+    return AuthUtil.generateJWT(user.email);
   }
 
   async addDashboard(email: string, dashboardId: string): Promise<boolean> {
@@ -70,16 +74,6 @@ export class AuthService {
     user.dashboardIds.push(dashboardId);
     await this.userRepo.save(user);
     return true;
-  }
-
-  private generateJWT(email: string): string {
-    const payload: JwtPayload = {
-      email,
-      iat: Date.now()
-    };
-    return jwt.sign(payload, CONFIG.jwtSecret, {
-      expiresIn: 30 * 24 * 60 * 60 * 1000
-    });
   }
 
 }
