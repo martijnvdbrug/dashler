@@ -5,6 +5,8 @@ import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
 import {readableId} from '../../lib/readable-id';
 import {UserService} from '../user/user.service';
+import {UserEntity} from '../user/model/user.entity';
+import {MaxBlocksException} from './max-blocks.exception';
 
 
 @Injectable()
@@ -19,7 +21,7 @@ export class DashboardService {
   /**
    * Gets dashboard by id. Validates if it belongs to email if an emailAddress is given.
    */
-  async get(id: string, email?: string): Promise<Dashboard> {
+  async get(id: string, email?: string): Promise<DashboardEntity> {
     const dashboard = await this.repo.get(id);
     if (!dashboard) {
       throw Error(`Dashboard ${id} not found.`);
@@ -33,7 +35,7 @@ export class DashboardService {
     throw new ForbiddenException(`You are not allowed to view this dashboard`);
   }
 
-  async getFirstForUser(email: string): Promise<Dashboard> {
+  async getFirstForUser(email: string): Promise<DashboardEntity> {
     const user = await this.userService.get(email);
     return this.repo.get(user.dashboardIds[0]);
   }
@@ -43,7 +45,7 @@ export class DashboardService {
     return await this.repo.getMultiple(user.dashboardIds);
   }
 
-  async create(input: DashboardInput, email: string): Promise<Dashboard> {
+  async create(input: DashboardInput, email: string): Promise<DashboardEntity> {
     const id = readableId(input.name);
     await Promise.all([
       this.repo.save({
@@ -56,17 +58,23 @@ export class DashboardService {
     return this.get(id);
   }
 
-  async addBlock(dashboardId: string, input: BlockInput): Promise<Dashboard> {
-    const dashboard = await this.get(dashboardId);
+  async addBlock(dashboardId: string, input: BlockInput, email: string): Promise<DashboardEntity> {
+    const [{plan}, dashboard]: [UserEntity, DashboardEntity] = await Promise.all([
+      this.userService.get(email),
+      this.get(dashboardId)
+    ]);
     if (!Array.isArray(dashboard.blocks)) {
       dashboard.blocks = [];
+    }
+    if (dashboard.blocks.length >= plan.maxBlocks) {
+      throw new MaxBlocksException(`You are only allowed to have ${plan.maxBlocks} blocks in you dashboard.`);
     }
     dashboard.blocks.push(DashboardAdapter.toBlock(input));
     await this.repo.save(dashboard);
     return dashboard;
   }
 
-  async removeBlock(dashboardId: string, blockId: string): Promise<Dashboard> {
+  async removeBlock(dashboardId: string, blockId: string): Promise<DashboardEntity> {
     const dashboard = await this.get(dashboardId);
     if (Array.isArray(dashboard.blocks)) {
       dashboard.blocks = dashboard.blocks.filter(block => block.id !== blockId);

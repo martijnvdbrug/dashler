@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {JwtPayload} from '../../lib/shared/jwt.payload';
 import {User} from '../../lib/shared/graphql-types';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {getMeQuery, getMeWithDashboardQuery} from './user.queries';
 import {Apollo} from 'apollo-angular-boost';
@@ -29,14 +29,24 @@ export class UserService {
     return this.apollo.watchQuery<any>({
       query: getMeQuery,
     }).valueChanges
-      .pipe(map(result => result.data.getMe));
+      .pipe(
+        catchError((e) => this.errorAndLogout(e)),
+        map(result => result.data.getMe)
+      );
   }
 
   getMeWithDasboards(): Observable<User> {
     return this.apollo.watchQuery<any>({
       query: getMeWithDashboardQuery,
     }).valueChanges
-      .pipe(map(result => result.data.Me));
+      .pipe(
+        catchError((e) => this.errorAndLogout(e)),
+        map(result => result.data.Me));
+  }
+
+  errorAndLogout(e): Observable<any> {
+    this.logout();
+    return Observable.throw(`Error getting User with dashboards`, e);
   }
 
   logout() {

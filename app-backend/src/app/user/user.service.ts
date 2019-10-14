@@ -4,6 +4,8 @@ import {UserInput} from './model/user.input';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {AuthUtil} from './auth.util';
 import {DashboardService} from '../dashboard/dashboard.service';
+import {Plan} from '../../lib/shared/graphql-types';
+import {readableId} from '../../lib/readable-id';
 
 @Injectable()
 export class UserService {
@@ -18,9 +20,6 @@ export class UserService {
     if (!input.email) {
       throw Error(`Cannot signup user without email. Given: ${JSON.stringify(input)}`);
     }
-    const dashboard = await this.dashboardService.create({
-      name: 'My dashboard'
-    }, input.email);
     const user: UserEntity = {
       id: input.email,
       email: input.email,
@@ -31,9 +30,13 @@ export class UserService {
       picture: input.picture,
       lastLogin: new Date(),
       provider: input.provider,
-      dashboardIds: [dashboard.id]
+      dashboardIds: [],
+      plan: this.getDefaultPlan(input.email)
     };
     await this.userRepo.save(user);
+    await this.dashboardService.create({
+      name: 'My dashboard'
+    }, input.email);
     return user;
   }
 
@@ -79,6 +82,18 @@ export class UserService {
     user.dashboardIds.push(dashboardId);
     await this.userRepo.save(user);
     return true;
+  }
+
+  getDefaultPlan(email: string): Plan {
+    return {
+      id: readableId(email),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      maxBlocks: 9,
+      maxDashboards: 1,
+      maxUptimeInterval: 15,
+      maxMembers: 5,
+    };
   }
 
 }

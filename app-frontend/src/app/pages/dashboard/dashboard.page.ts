@@ -1,13 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {DashboardService} from '../../providers/dashboard.service';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {ButtonInput, Dashboard} from '../../../../../shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../providers/user.service';
 import {User} from '../../../lib/shared/graphql-types';
-import {catchError, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
+import {ApolloError} from 'apollo-angular-boost';
 
 @Component({
   selector: 'dashboard-page',
@@ -23,6 +24,7 @@ export class DashboardPage implements OnInit {
   allDashboards$: Observable<Dashboard[]>;
   user$: Observable<User>;
   dashboardId: string;
+  subscriptionMessage: string;
   addBlockForm = new FormGroup({
     name: new FormControl(),
     button1Label: new FormControl(),
@@ -50,10 +52,6 @@ export class DashboardPage implements OnInit {
       });
     });
     this.user$ = this.userService.getMeWithDasboards();
-    this.user$.pipe(catchError((e) => {
-      this.logout();
-      return Observable.throw(`Error getting User with dashboards`, e);
-    }));
     this.allDashboards$ = this.user$.pipe(map(user => user.dashboards));
   }
 
@@ -77,11 +75,24 @@ export class DashboardPage implements OnInit {
         url: this.addBlockForm.value.button3Url
       });
     }
-    await this.dashboardService.addBlock(this.dashboardId, {
-      name: this.addBlockForm.value.name,
-      buttons
-    });
-    this.addBlockForm.reset();
+    try {
+      await this.dashboardService.addBlock(this.dashboardId, {
+        name: this.addBlockForm.value.name,
+        buttons
+      });
+      this.addBlockForm.reset();
+    } catch (e) {
+      if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'MaxBlocksException') {
+        this.showSubcribeModal(e.graphQLErrors[0].message);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  showSubcribeModal(message: string) {
+    this.subscriptionMessage = message;
+    document.getElementById('openSubscribeModal').click();
   }
 
   isActive(id: string): boolean {

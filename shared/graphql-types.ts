@@ -93,4 +93,5 @@ export interface User extends GraphqlNode {
     familyname?: string;
     picture?: string;
     dashboards?: Dashboard[];
+    plan?: Plan;
 }

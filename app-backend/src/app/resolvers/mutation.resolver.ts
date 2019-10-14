@@ -21,7 +21,7 @@ export class MutationResolver {
     @Args('dashboardId') dashboardId: string,
     @Args('input') input: BlockInput,
     @Context('email') email: string): Promise<Dashboard> {
-    return this.dashboardService.addBlock(dashboardId, input);
+    return this.dashboardService.addBlock(dashboardId, input, email);
   }
 
   @Mutation()
