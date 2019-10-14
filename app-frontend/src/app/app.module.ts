@@ -12,6 +12,7 @@ import {LoginPage} from './pages/login/login.page';
 import {LoginHandler} from './pages/login/login.handler';
 import {AuthGuard} from './guards/auth.guard';
 import {UserService} from './providers/user.service';
+import {environment} from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import {UserService} from './providers/user.service';
       provide: APOLLO_BOOST_CONFIG,
       useFactory() {
         return {
-          uri: 'http://localhost:8999/graphql',
+          uri: `${environment.authServer}/graphql`,
           request: (operation) => {
             const token = localStorage.getItem('token');
             operation.setContext({

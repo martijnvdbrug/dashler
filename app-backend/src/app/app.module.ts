@@ -23,7 +23,9 @@ import {MutationResolver} from './resolvers/mutation.resolver';
         // get the user token from the headers
         const token = req.headers.authorization || '';
         return { token };
-      }
+      },
+      introspection: true,
+      playground: true
     }),
     DashboardModule,
     AuthModule,

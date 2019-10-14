@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  authServer: 'http://localhost:8999'
+  authServer: 'https://dasher-253813.appspot.com'
 };
