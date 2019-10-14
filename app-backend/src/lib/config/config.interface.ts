@@ -3,4 +3,5 @@ export interface ConfigInterface {
   googleClientSecret;
   jwtSecret;
   host;
+  appHost;
 }
