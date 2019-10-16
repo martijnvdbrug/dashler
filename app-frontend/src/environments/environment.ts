@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  authServer: 'http://localhost:8999'
+  authServer: 'http://localhost:8999',
+  homepage: 'https://whatsrunning.io'
 };
 
 /*

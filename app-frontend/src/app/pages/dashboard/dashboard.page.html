@@ -7,9 +7,9 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <!-- Brand -->
-<!--    <a class="navbar-brand pt-0" href="./index.html">
-      <img src="./assets/img/brand/blue.png" class="navbar-brand-img" alt="...">
-    </a>-->
+    <!--    <a class="navbar-brand pt-0" href="./index.html">
+          <img src="./assets/img/brand/blue.png" class="navbar-brand-img" alt="...">
+        </a>-->
     <!-- User -->
     <ul class="nav align-items-center d-md-none" *ngIf=" user$ | async; let user ">
       <li class="nav-item dropdown">
@@ -21,7 +21,7 @@
           </div>
         </a>
         <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
-          <a href="#!" (click)="logout()"  class="dropdown-item">
+          <a href="#!" (click)="logout()" class="dropdown-item">
             <i class="ni ni-user-run"></i>
             <span>Logout</span>
           </a>
@@ -174,8 +174,29 @@
                   <div class="form-group">
                     <input type="text" class="form-control" id="blockName" placeholder="Name" formControlName="name">
                   </div>
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="blockUrl" placeholder="Url" formControlName="url">
+                  <div class="custom-control custom-checkbox mb-3">
+                    <input class="custom-control-input" id="uptimeCheck" type="checkbox" (change)="toggleUptime($event.target.checked)">
+                    <label class="custom-control-label" for="uptimeCheck">Check uptime</label>
+                  </div>
+                  <div id="add-block-uptime" hidden>
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="blockUrl" placeholder="https://your-url" formControlName="url">
+                    </div>
+                    <div class="custom-control custom-checkbox mb-3">
+                      <input class="custom-control-input" id="disableDuring" type="checkbox" (change)="toggleDisableHours($event.target.checked)">
+                      <label class="custom-control-label" for="disableDuring">Disable during certain hours</label>
+                    </div>
+                    <div class="form-group" id="disabled-hours" hidden>
+                      Disable from <input type="number" min="0" max="24" class="form-control inline-nr-input" value="18" formControlName="disableFrom"> to
+                      <input type="number" min="0" max="24" class="form-control inline-nr-input" value="6" formControlName="disableTo">
+                    </div>
+                    <div class="form-group">
+                      Every <input type="number" min="5" max="60" class="form-control inline-nr-input" value="60" formControlName="minutes" [attr.disabled]="!isPro()?'':null"> minutes
+                    </div>
+                    <div class="form-group">
+                      <input type="text" placeholder="Webhook for notifying downtime" class="form-control" [attr.disabled]="!isPro()?'':null" formControlName="url" />
+                    </div>
+                    <a [href]="environment.homepage" [attr.hidden]="isPro()?'':null" >Upgrade to PRO to get higher frequency uptime checks, webhooks and alot more!</a>
                   </div>
                 </div>
               </div>
@@ -222,7 +243,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <a role="button" class="btn btn-white" href="https://whatsrunning.io" >Yes, I am PRO</a>
+            <a role="button" class="btn btn-white" [href]="environment.homepage">Yes, I am PRO</a>
             <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
           </div>
         </div>

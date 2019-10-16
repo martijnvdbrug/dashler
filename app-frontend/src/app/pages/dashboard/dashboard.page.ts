@@ -9,16 +9,18 @@ import {UserService} from '../../providers/user.service';
 import {User} from '../../../lib/shared/graphql-types';
 import {map} from 'rxjs/operators';
 import {ApolloError} from 'apollo-angular-boost';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'dashboard-page',
   templateUrl: './dashboard.page.html',
-  // styleUrls: ['../../app.component.scss']
+  styleUrls: ['./dashboard.page.scss']
 })
 export class DashboardPage implements OnInit {
 
   loading = true;
   dashboard$: Observable<Dashboard>;
+  environment = environment;
   /**
    * AllDashboards only incudes names and ID's in this context
    */
@@ -47,7 +49,7 @@ export class DashboardPage implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      // this.dashboard$ = this.dashboardService.get(params.get('id'));
+      this.dashboard$ = this.dashboardService.get(params.get('id'));
       this.dashboard$.subscribe(d => {
         this.dashboardId = d.id;
         this.location.go(`/dashboard/${d.id}`);
@@ -99,12 +101,23 @@ export class DashboardPage implements OnInit {
     document.getElementById('openSubscribeModal').click();
   }
 
+  toggleUptime(checked) {
+    document.getElementById('add-block-uptime').hidden = !checked;
+  }
+  toggleDisableHours(checked) {
+    document.getElementById('disabled-hours').hidden = !checked;
+  }
+
   isActive(id: string): boolean {
     return this.dashboardId === id;
   }
 
   logout() {
     this.userService.logout();
+  }
+
+  isPro(): boolean {
+    return false;
   }
 
 }

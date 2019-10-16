@@ -16,7 +16,8 @@ export const pollUrls = (pubSubEvent, context) => {
   // GET each url
   // statusCode
   // optional errorMessage
-  // Get from datastore
+  // Get from datastore where minutes = X
+  // https://stackoverflow.com/questions/44202426/how-to-do-a-keys-only-query-in-google-cloud-datastore-node-js
   // Calculate new Uptimes
   // store in datastore
 
