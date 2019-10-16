@@ -1,7 +1,7 @@
 {
-  "name": "app-backend",
+  "name": "uptime",
   "version": "0.0.1",
-  "description": "backend for dashler frontend",
+  "description": "Uptime checker function for WhatsRunning.io",
   "main": "index.js",
   "author": "Martijn van de Brug",
   "license": "MIT",
@@ -10,22 +10,12 @@
   },
   "dependencies": {
     "@google-cloud/datastore": "^4.3.0",
-    "@nestjs/common": "^6.7.2",
-    "@nestjs/core": "^6.7.2",
-    "@nestjs/platform-express": "^6.7.2",
-    "dotenv": "^8.1.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.5.3"
+    "dotenv": "^8.1.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^6.8.1",
-    "@nestjs/testing": "^6.7.2",
-    "@types/jest": "^24.0.18",
-    "@types/jsonwebtoken": "^8.3.4",
+    "@types/node": "^12.7.12",
     "copyfiles": "^2.1.1",
-    "jest": "^24.9.0",
     "nodemon": "^1.19.2",
-    "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1"
   },
   "scripts": {
@@ -33,8 +23,6 @@
     "compile": "yarn tsc && yarn copyfiles -u 1 src/**/*.graphql dist",
     "dev": "export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json && export GCLOUD_PROJECT=dasher-253813 && yarn nodemon --delay 0.5 -e ts  --exec \"yarn compile || exit 1 && yarn start \"",
     "script": "export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json && export GCLOUD_PROJECT=dasher-253813 && yarn ts-node",
-    "deploy": "rm -r dist/* && yarn compile && gcloud app deploy app.yaml --quiet --project=dasher-253813",
-    "generate": "yarn ts-node src/lib/generate-typings.ts",
     "test": "yarn jest"
   },
   "jest": {

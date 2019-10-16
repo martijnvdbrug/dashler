@@ -147,10 +147,14 @@
     </button>
 
     <!-- Card stats -->
-    <div class="row" *ngIf="dashboard$ | async; let dashboard">
+    <div class="row" *ngIf="dashboard$ | async as dashboard">
 
       <app-block *ngFor='let block of dashboard.blocks' [block]="block" [dashboardId]="dashboard.id"></app-block>
 
+    </div>
+
+    <div *ngIf="loading" class="row" style="padding: 10% 40%;">
+      <app-loader></app-loader>
     </div>
 
     <!-- Add Block Modal -->

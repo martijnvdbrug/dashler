@@ -13,6 +13,7 @@ import {AuthGuard} from './guards/auth.guard';
 import {UserService} from './providers/user.service';
 import {environment} from '../environments/environment';
 import {ApolloBoostModule, APOLLO_BOOST_CONFIG, ApolloBoost} from 'apollo-angular-boost';
+import {LoaderComponent} from './components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {ApolloBoostModule, APOLLO_BOOST_CONFIG, ApolloBoost} from 'apollo-angula
     BlockComponent,
     DashboardPage,
     LoginPage,
-    LoginHandler
+    LoginHandler,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,

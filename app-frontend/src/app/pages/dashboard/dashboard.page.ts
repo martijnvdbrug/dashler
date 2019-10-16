@@ -17,6 +17,7 @@ import {ApolloError} from 'apollo-angular-boost';
 })
 export class DashboardPage implements OnInit {
 
+  loading = true;
   dashboard$: Observable<Dashboard>;
   /**
    * AllDashboards only incudes names and ID's in this context
@@ -46,10 +47,11 @@ export class DashboardPage implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.dashboard$ = this.dashboardService.get(params.get('id'));
+      // this.dashboard$ = this.dashboardService.get(params.get('id'));
       this.dashboard$.subscribe(d => {
         this.dashboardId = d.id;
         this.location.go(`/dashboard/${d.id}`);
+        this.loading = false;
       });
     });
     this.user$ = this.userService.getMeWithDasboards();
