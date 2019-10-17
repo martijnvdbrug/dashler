@@ -6,8 +6,8 @@
 
 /* tslint:disable */
 export interface BlockInput {
-    name?: string;
-    url?: string;
+    name: string;
+    uptimecheck?: UptimeCheckInput;
     buttons?: ButtonInput[];
 }
 
@@ -18,6 +18,18 @@ export interface ButtonInput {
 
 export interface DashboardInput {
     name?: string;
+}
+
+export interface HourRangeInput {
+    from?: number;
+    to?: number;
+}
+
+export interface UptimeCheckInput {
+    url: string;
+    disabledHours?: HourRangeInput;
+    interval: number;
+    webhook?: string;
 }
 
 export interface GraphqlNode {
@@ -53,6 +65,11 @@ export interface Dashboard extends GraphqlNode {
     blocks?: Block[];
 }
 
+export interface HourRange {
+    from?: number;
+    to?: number;
+}
+
 export interface IMutation {
     createDashboard(input?: DashboardInput): Dashboard | Promise<Dashboard>;
     addBlock(dashboardId: string, input?: BlockInput): Dashboard | Promise<Dashboard>;
@@ -67,6 +84,7 @@ export interface Plan extends GraphqlNode {
     maxBlocks?: number;
     maxUptimeInterval?: number;
     maxMembers?: number;
+    webhookNotifications?: boolean;
 }
 
 export interface IQuery {
@@ -78,7 +96,16 @@ export interface Uptime extends GraphqlNode {
     id: string;
     createdAt?: Date;
     updatedAt?: Date;
-    checkEvery?: number;
+    checkInterval?: number;
+    webhook?: string;
+    disabledHours?: HourRange;
+    stats?: UptimeStats;
+}
+
+export interface UptimeStats extends GraphqlNode {
+    id: string;
+    createdAt?: Date;
+    updatedAt?: Date;
     ms0_100?: number;
     ms100_500?: number;
     ms500_1?: number;

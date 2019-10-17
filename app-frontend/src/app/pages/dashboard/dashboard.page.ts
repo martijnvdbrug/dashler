@@ -88,7 +88,7 @@ export class DashboardPage implements OnInit {
       });
       this.addBlockForm.reset();
     } catch (e) {
-      if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'MaxBlocksException') {
+      if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'NotInPlanException') {
         this.showSubcribeModal(e.graphQLErrors[0].message);
       } else {
         throw e;

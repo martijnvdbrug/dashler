@@ -10,7 +10,6 @@ export class DashboardAdapter {
       createdAt: now,
       updatedAt: now,
       name: input.name,
-      url: input.url,
       buttons: input.buttons.map(b => DashboardAdapter.toButton(b)),
     };
   }

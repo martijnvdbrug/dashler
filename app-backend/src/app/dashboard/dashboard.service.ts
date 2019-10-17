@@ -1,13 +1,13 @@
 import {ForbiddenException, forwardRef, Inject, Injectable} from '@nestjs/common';
-import {BlockInput, Dashboard, DashboardInput, Uptime} from '../../lib/shared/graphql-types';
+import {BlockInput, Dashboard, DashboardInput, Uptime, UptimeCheckInput} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
 import {readableId} from '../../lib/readable-id';
 import {UserService} from '../user/user.service';
 import {UserEntity} from '../user/model/user.entity';
-import {MaxBlocksException} from './max-blocks.exception';
 import normalizeUrl = require('normalize-url');
+import {PlanValidator} from './plan.validator';
 
 
 @Injectable()
@@ -68,12 +68,15 @@ export class DashboardService {
     if (!Array.isArray(dashboard.blocks)) {
       dashboard.blocks = [];
     }
-    if (dashboard.blocks.length >= plan.maxBlocks) {
-      throw new MaxBlocksException(`You are only allowed to have ${plan.maxBlocks} blocks in you dashboard.`);
+    PlanValidator.validateBlocks(dashboard.blocks, plan);
+    let createUptimePromise;
+    if (input.uptimecheck) {
+      PlanValidator.validateUptime(input.uptimecheck, plan);
+      createUptimePromise = this.createUptime(input.uptimecheck);
     }
     dashboard.blocks.push(DashboardAdapter.toBlock(input));
     await Promise.all([
-      this.createUptime(input.url),
+      createUptimePromise,
       this.dashboardRepo.save(dashboard)
     ]);
     return dashboard;
@@ -87,9 +90,7 @@ export class DashboardService {
     if (!Array.isArray(dashboard.users)) {
       dashboard.users = [];
     }
-    if (dashboard.users.length >= plan.maxMembers) {
-      throw new MaxBlocksException(`You are only allowed to have ${plan.maxBlocks} blocks in you dashboard.`);
-    }
+    PlanValidator.validateMembers(dashboard.users, plan);
     dashboard.users.push(emailToAdd);
     await this.dashboardRepo.save(dashboard);
     return dashboard;
@@ -109,15 +110,16 @@ export class DashboardService {
     return dashboard;
   }
 
-  async createUptime(url: string): Promise<Uptime> {
-    if (await this.uptimeRepo.exists(url)) {
-      return this.uptimeRepo.get(url);
+  async createUptime(input: UptimeCheckInput): Promise<Uptime> {
+    if (await this.uptimeRepo.exists(input.url)) {
+      return this.uptimeRepo.get(input.url);
     }
     const uptime: Uptime = {
-      id: normalizeUrl(url),
+      id: normalizeUrl(input.url),
       createdAt: new Date(),
       updatedAt: new Date(),
-      checkEvery: 30
+      checkInterval: input.interval,
+      webhook: input.url,
     };
     await this.uptimeRepo.save(uptime);
     return undefined;

@@ -18,12 +18,25 @@ input DashboardInput {
 }
 
 input BlockInput {
-  name: String
-  url: String
+  name: String!
+  uptimecheck: UptimeCheckInput
   buttons: [ButtonInput]
 }
 
 input ButtonInput {
   label: String
   url: String
+}
+
+input UptimeCheckInput {
+  url: String!
+  disabledHours: HourRangeInput
+  # Time in minutes
+  interval: Int!
+  webhook: String
+}
+
+input HourRangeInput {
+  from: Int
+  to: Int
 }

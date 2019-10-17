@@ -29,7 +29,21 @@ type Uptime implements GraphqlNode {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  checkEvery: Int
+  checkInterval: Int
+  webhook: String
+  disabledHours: HourRange
+  stats: UptimeStats
+}
+
+type HourRange {
+  from: Int
+  to: Int
+}
+
+type UptimeStats implements GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
   ms0_100: Int
   ms100_500: Int
   ms500_1: Int
@@ -66,4 +80,5 @@ type Plan implements GraphqlNode {
   maxBlocks: Int
   maxUptimeInterval: Int
   maxMembers: Int
+  webhookNotifications: Boolean
 }
