@@ -36,8 +36,8 @@ type Uptime implements GraphqlNode {
 }
 
 type HourRange {
-  from: Int
-  to: Int
+  from: Date
+  to: Date
 }
 
 type UptimeStats implements GraphqlNode {

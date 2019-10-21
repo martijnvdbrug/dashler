@@ -37,6 +37,6 @@ input UptimeCheckInput {
 }
 
 input HourRangeInput {
-  from: Int
-  to: Int
+  from: Date
+  to: Date
 }

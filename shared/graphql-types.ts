@@ -21,8 +21,8 @@ export interface DashboardInput {
 }
 
 export interface HourRangeInput {
-    from?: number;
-    to?: number;
+    from?: Date;
+    to?: Date;
 }
 
 export interface UptimeCheckInput {
@@ -66,8 +66,8 @@ export interface Dashboard extends GraphqlNode {
 }
 
 export interface HourRange {
-    from?: number;
-    to?: number;
+    from?: Date;
+    to?: Date;
 }
 
 export interface IMutation {

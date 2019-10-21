@@ -10,13 +10,15 @@
   },
   "dependencies": {
     "@google-cloud/datastore": "^4.3.0",
-    "dotenv": "^8.1.0"
+    "dotenv": "^8.1.0",
+    "shortid": "^2.2.15"
   },
   "devDependencies": {
     "@types/node": "^12.7.12",
     "copyfiles": "^2.1.1",
     "nodemon": "^1.19.2",
-    "ts-node": "^8.4.1"
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
   },
   "scripts": {
     "start": "node dist/index.js",

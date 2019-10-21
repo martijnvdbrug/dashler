@@ -86,10 +86,7 @@ export class DashboardPage implements OnInit {
       });
     }
     try {
-      const disabledHours: HourRange = this.addBlockForm.value.uptimeDisabledHours ? {
-        from: this.addBlockForm.value.disableFrom,
-        to: this.addBlockForm.value.disableTo,
-      } : undefined;
+      const disabledHours: HourRange = this.createDisabledHours();
       const uptimecheck: UptimeCheckInput = this.addBlockForm.value.uptimeCheck ? {
         disabledHours,
         interval: this.addBlockForm.value.uptimeInterval ? this.addBlockForm.value.uptimeInterval : 60,
@@ -134,6 +131,23 @@ export class DashboardPage implements OnInit {
 
   isPro(): boolean {
     return false;
+  }
+
+  /**
+   * Create timezone dependant date from hours
+   */
+  createDisabledHours(): HourRange {
+    if (!this.addBlockForm.value.uptimeDisabledHours) {
+      return undefined;
+    }
+    const from = new Date();
+    from.setHours(this.addBlockForm.value.disableFrom);
+    const to = new Date();
+    to.setHours(this.addBlockForm.value.disableTo);
+    return {
+      from,
+      to,
+    };
   }
 
 }

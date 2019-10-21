@@ -6,8 +6,8 @@ import {DashboardEntity} from './model/dashboard.entity';
 import {readableId} from '../../lib/readable-id';
 import {UserService} from '../user/user.service';
 import {UserEntity} from '../user/model/user.entity';
-import normalizeUrl = require('normalize-url');
 import {PlanValidator} from './plan.validator';
+import normalizeUrl = require('normalize-url');
 
 
 @Injectable()
@@ -92,7 +92,10 @@ export class DashboardService {
     }
     PlanValidator.validateMembers(dashboard.users, plan);
     dashboard.users.push(emailToAdd);
-    await this.dashboardRepo.save(dashboard);
+    await Promise.all([
+      this.userService.addDashboard(emailToAdd, dashboardId),
+      this.dashboardRepo.save(dashboard)
+    ]);
     return dashboard;
   }
 
@@ -114,16 +117,18 @@ export class DashboardService {
     if (await this.uptimeRepo.exists(input.url)) {
       return this.uptimeRepo.get(input.url);
     }
+    const id = normalizeUrl(input.url);
     const uptime: Uptime = {
-      id: normalizeUrl(input.url),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      checkInterval: input.interval,
-      webhook: input.url,
-      disabledHours: input.disabledHours
-    };
+        id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        checkInterval: Math.ceil(input.interval / 5) * 5,
+        webhook: input.webhook,
+        disabledHours: input.disabledHours
+      }
+    ;
     await this.uptimeRepo.save(uptime);
-    return undefined;
+    return this.uptimeRepo.get(id);
   }
 
   async removeUptime(url: string): Promise<boolean> {

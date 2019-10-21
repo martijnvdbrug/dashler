@@ -51,13 +51,19 @@ export class UserService {
     return user;
   }
 
-  async login(email: string): Promise<string> {
-    const user = await this.get(email);
-    await this.userRepo.save({
+  async login(input: UserInput): Promise<string> {
+    const user = await this.get(input.email);
+    await this.userRepo.save({ // Update data when login
       ...user,
+      firstname: input.firstname,
+      familyname: input.familyname,
+      locale: input.locale,
+      originId: input.originId,
+      picture: input.picture,
+      provider: input.provider,
       lastLogin: new Date()
     });
-    return AuthUtil.generateJWT(email);
+    return AuthUtil.generateJWT(input.email);
   }
 
   /**
@@ -68,14 +74,21 @@ export class UserService {
       throw Error(`Cannot signup user without email. Given: ${JSON.stringify(user)}`);
     }
     if (await this.userRepo.exists(user.email)) {
-      return this.login(user.email);
+      return this.login(user);
     }
     await this.create(user);
     return AuthUtil.generateJWT(user.email);
   }
 
   async addDashboard(email: string, dashboardId: string): Promise<boolean> {
-    const user = await this.get(email);
+    let user: UserEntity;
+    try {
+      user = await this.get(email);
+    } catch (e) {
+      this.create({ // Create empty user on invite, will be updated on login
+        email
+      });
+    }
     if (!user.dashboardIds || !Array.isArray(user.dashboardIds)) {
       user.dashboardIds = [];
     }
@@ -91,7 +104,7 @@ export class UserService {
       updatedAt: new Date(),
       maxBlocks: 9,
       maxDashboards: 1,
-      maxUptimeInterval: 15,
+      maxUptimeInterval: 60,
       maxMembers: 1,
     };
   }

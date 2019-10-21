@@ -1,16 +1,19 @@
-export const batchUrlsToPubsub = (req, res) => {
+import {PollingService} from './polling.service';
 
-  // Get all Urls from datastore
-  // Batch url's per 10?
-  // push to pubsub
-
+export const batchUrlsToPubsub = async (req, res) => {
+  try {
+    await PollingService.getUrls();
+  } catch (e) {
+    console.error(`Error batching URL's to pubsubs!`, e);
+    res.status(500).send();
+    return;
+  }
   res.send(`success`);
 };
 
 export const pollUrls = (pubSubEvent, context) => {
   const name = pubSubEvent.data ? Buffer.from(pubSubEvent.data, 'base64').toString()
     : 'World';
-
   // For each
   // now = new Date()
   // GET each url
@@ -20,6 +23,5 @@ export const pollUrls = (pubSubEvent, context) => {
   // https://stackoverflow.com/questions/44202426/how-to-do-a-keys-only-query-in-google-cloud-datastore-node-js
   // Calculate new Uptimes
   // store in datastore
-
-  return `Success`;
+  return `success`;
 };
