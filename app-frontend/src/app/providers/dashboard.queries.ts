@@ -17,10 +17,18 @@ export const dashboardFields = gql`
                 id
                 createdAt
                 updatedAt
-                ms0_100
-                ms100_500
-                s1
-                error
+                checkInterval
+                webhook
+                stats {
+                    ms0_100
+                    ms100_500
+                    s1
+                    error
+                }
+                disabledHours {
+                    from
+                    to
+                }
             }
             buttons {
                 label

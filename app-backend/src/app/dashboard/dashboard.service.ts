@@ -120,6 +120,7 @@ export class DashboardService {
       updatedAt: new Date(),
       checkInterval: input.interval,
       webhook: input.url,
+      disabledHours: input.disabledHours
     };
     await this.uptimeRepo.save(uptime);
     return undefined;

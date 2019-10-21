@@ -2,11 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {DashboardService} from '../../providers/dashboard.service';
 import {Observable} from 'rxjs';
-import {ButtonInput, Dashboard} from '../../../../../shared/graphql-types';
+import {ButtonInput, Dashboard, HourRange, UptimeCheckInput, User} from '../../../lib/shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../providers/user.service';
-import {User} from '../../../lib/shared/graphql-types';
 import {map} from 'rxjs/operators';
 import {ApolloError} from 'apollo-angular-boost';
 import {environment} from '../../../environments/environment';
@@ -30,7 +29,13 @@ export class DashboardPage implements OnInit {
   subscriptionMessage: string;
   addBlockForm = new FormGroup({
     name: new FormControl(),
-    url: new FormControl(),
+    uptimeCheck: new FormControl(),
+    uptimeUrl: new FormControl(),
+    uptimeDisabledHours: new FormControl(),
+    disableFrom: new FormControl(),
+    disableTo: new FormControl(),
+    uptimeInterval: new FormControl(),
+    uptimeWebhook: new FormControl(),
     button1Label: new FormControl(),
     button1Url: new FormControl(),
     button2Label: new FormControl(),
@@ -81,9 +86,19 @@ export class DashboardPage implements OnInit {
       });
     }
     try {
+      const disabledHours: HourRange = this.addBlockForm.value.uptimeDisabledHours ? {
+        from: this.addBlockForm.value.disableFrom,
+        to: this.addBlockForm.value.disableTo,
+      } : undefined;
+      const uptimecheck: UptimeCheckInput = this.addBlockForm.value.uptimeCheck ? {
+        disabledHours,
+        interval: this.addBlockForm.value.uptimeInterval ? this.addBlockForm.value.uptimeInterval : 60,
+        url: this.addBlockForm.value.uptimeUrl,
+        webhook: this.addBlockForm.value.uptimeWebhook,
+      } : undefined;
       await this.dashboardService.addBlock(this.dashboardId, {
         name: this.addBlockForm.value.name,
-        url: this.addBlockForm.value.url,
+        uptimecheck,
         buttons
       });
       this.addBlockForm.reset();
@@ -104,6 +119,7 @@ export class DashboardPage implements OnInit {
   toggleUptime(checked) {
     document.getElementById('add-block-uptime').hidden = !checked;
   }
+
   toggleDisableHours(checked) {
     document.getElementById('disabled-hours').hidden = !checked;
   }

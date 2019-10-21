@@ -44,6 +44,7 @@ export class BlockComponent implements AfterViewInit {
         ]
       },
       options: {
+        maintainAspectRatio: false,
         legend: {
           display: false
         }
