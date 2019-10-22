@@ -57,13 +57,13 @@ export class DashboardService {
       }),
       this.userService.addDashboard(email, id)
     ]);
-    return this.get(id);
+    return this.get(id, email);
   }
 
   async addBlock(dashboardId: string, input: BlockInput, email: string): Promise<DashboardEntity> {
     const [{plan}, dashboard]: [UserEntity, DashboardEntity] = await Promise.all([
       this.userService.get(email),
-      this.get(dashboardId)
+      this.get(dashboardId, email)
     ]);
     if (!Array.isArray(dashboard.blocks)) {
       dashboard.blocks = [];
@@ -85,10 +85,13 @@ export class DashboardService {
   async addUser(dashboardId: string, emailToAdd: string, loggedInUserEmail: string): Promise<DashboardEntity> {
     const [{plan}, dashboard]: [UserEntity, DashboardEntity] = await Promise.all([
       this.userService.get(loggedInUserEmail),
-      this.get(dashboardId)
+      this.get(dashboardId, loggedInUserEmail)
     ]);
     if (!Array.isArray(dashboard.users)) {
       dashboard.users = [];
+    }
+    if (dashboard.users.indexOf(emailToAdd) > -1) {
+      return dashboard;
     }
     PlanValidator.validateMembers(dashboard.users, plan);
     dashboard.users.push(emailToAdd);
@@ -99,8 +102,8 @@ export class DashboardService {
     return dashboard;
   }
 
-  async removeBlock(dashboardId: string, blockId: string): Promise<DashboardEntity> {
-    const dashboard = await this.get(dashboardId);
+  async removeBlock(dashboardId: string, blockId: string, email: string): Promise<DashboardEntity> {
+    const dashboard = await this.get(dashboardId, email);
     if (!Array.isArray(dashboard.blocks)) {
       return dashboard;
     }

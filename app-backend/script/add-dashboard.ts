@@ -7,7 +7,8 @@ import {DashboardService} from '../src/app/dashboard/dashboard.service';
   require('dotenv').config();
   const ctx = await NestFactory.createApplicationContext(AppModule);
   const dashboardService: DashboardService = ctx.get(DashboardService);
-  const success = await dashboardService.addUser('u1lQsNbW-staging', 'martijn@mistergreen.nl', 'yannick@mistergreen.nl');
+  await dashboardService.create({name: 'test'}, 'martijn@mistergreen.nl');
+
   process.exit(0);
 
 })();

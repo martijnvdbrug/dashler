@@ -29,7 +29,7 @@ export class MutationResolver {
     @Args('dashboardId') dashboardId: string,
     @Args('blockId') blockId: string,
     @Context('email') email: string): Promise<Dashboard> {
-    return this.dashboardService.removeBlock(dashboardId, blockId);
+    return this.dashboardService.removeBlock(dashboardId, blockId, email);
   }
 
 }

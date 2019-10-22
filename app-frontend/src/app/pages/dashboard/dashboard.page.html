@@ -191,7 +191,7 @@
                       <input type="number" min="0" max="24" class="form-control inline-nr-input" value="6" formControlName="disableTo">
                     </div>
                     <div class="form-group">
-                      Every <input type="number" min="5" max="60" class="form-control inline-nr-input" value="60" step="5" formControlName="uptimeInterval" [attr.disabled]="!isPro()?'':null"> minutes
+                      Every <input type="number" min="5" max="60" class="form-control inline-nr-input" placeholder="60" value="60" step="5" formControlName="uptimeInterval" [attr.disabled]="!isPro()?'':null"> minutes
                     </div>
                     <div class="form-group">
                       <input type="text" placeholder="Webhook for notifying downtime" class="form-control" [attr.disabled]="!isPro()?'':null" formControlName="uptimeWebhook" />
