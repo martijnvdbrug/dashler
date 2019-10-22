@@ -34,9 +34,6 @@ export class UserService {
       plan: this.getDefaultPlan(input.email)
     };
     await this.userRepo.save(user);
-    await this.dashboardService.create({
-      name: 'My dashboard'
-    }, input.email);
     return user;
   }
 
@@ -91,6 +88,9 @@ export class UserService {
     }
     if (!user.dashboardIds || !Array.isArray(user.dashboardIds)) {
       user.dashboardIds = [];
+    }
+    if (user.dashboardIds.indexOf(dashboardId) > -1) {
+      return false;
     }
     user.dashboardIds.push(dashboardId);
     await this.userRepo.save(user);

@@ -1,8 +1,8 @@
-import {PollingService} from '../src/polling.service';
+import {BatchService} from '../src/polling.service';
 
 (async () => {
 
-  await PollingService.getUrls();
+  await BatchService.getUrls();
   process.exit(0);
 
 })();

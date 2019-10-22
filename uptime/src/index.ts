@@ -1,8 +1,8 @@
-import {PollingService} from './polling.service';
+import {BatchService} from './polling.service';
 
 export const batchUrlsToPubsub = async (req, res) => {
   try {
-    await PollingService.getUrls();
+    await BatchService.getUrls();
   } catch (e) {
     console.error(`Error batching URL's to pubsubs!`, e);
     res.status(500).send();
@@ -12,8 +12,7 @@ export const batchUrlsToPubsub = async (req, res) => {
 };
 
 export const pollUrls = (pubSubEvent, context) => {
-  const name = pubSubEvent.data ? Buffer.from(pubSubEvent.data, 'base64').toString()
-    : 'World';
+  const urls: string[] = JSON.parse(Buffer.from(pubSubEvent.data, 'base64').toString());
   // For each
   // now = new Date()
   // GET each url

@@ -1,9 +1,14 @@
 import {Uptime} from '../../shared/graphql-types';
 import {DatastoreClient} from './lib/datastore/datastore.client';
 import {HourRange} from './lib/shared/graphql-types';
+import {PubsubUtil} from './lib/pubsub.util';
 
-export class PollingService {
+/**
+ * Get URLS from datastore, and publish the ones that need to be checked to datastore
+ */
+export class BatchService {
 
+  static topicname = 'uptime-urls-to-poll';
   static repo = new DatastoreClient<Uptime>('Uptime');
 
   static async getUrls(): Promise<void> {
@@ -16,25 +21,23 @@ export class PollingService {
     }
     console.log(`Checking URLs with interval ${checkForIntervals}`);
     const uptimesArray: Uptime[][] = await Promise.all(
-      checkForIntervals.map(interval => PollingService.repo.query({property: 'checkInterval', operator: '=', value: interval}))
+      checkForIntervals.map(interval => BatchService.repo.query({property: 'checkInterval', operator: '=', value: interval}))
     );
     const uptimes = uptimesArray.reduce((a, b) => a.concat(b));
     console.log('getting urls', uptimes.map(u => u.id));
     const urls = uptimes
-      .filter(u => !PollingService.disableNow(u.disabledHours, u.id))
+      .filter(u => !BatchService.disableNow(u.disabledHours, u.id))
       .map(u => u.id);
-
     while (urls.length) {
       const batch = urls.splice(0, 10);
-      await PollingService.publishToPubSub(batch);
+      await PubsubUtil.publish(BatchService.topicname, urls);
       console.log(`publishing ${batch}`);
     }
   }
 
-  static async publishToPubSub(urls: string[]): Promise<void> {
-    return undefined;
-  }
-
+  /**
+   * Check if the uptimeCheck is disabled at this moment
+   */
   static disableNow(disabledHours: HourRange, url: string): boolean {
     if (!disabledHours || !disabledHours.from || !disabledHours.to) {
       return false;
