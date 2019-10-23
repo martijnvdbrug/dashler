@@ -82,7 +82,7 @@ export class UserService {
     try {
       user = await this.get(email);
     } catch (e) {
-      this.create({ // Create empty user on invite, will be updated on login
+      user = await this.create({ // Create empty user on invite, will be updated on login
         email
       });
     }

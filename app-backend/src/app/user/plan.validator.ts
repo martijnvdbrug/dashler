@@ -1,5 +1,5 @@
 import {NotInPlanException} from './not-in-plan.exception';
-import {Block, Plan, UptimeCheckInput} from '../../lib/shared/graphql-types';
+import {Block, Plan, UptimeCheckInput} from '../../../../shared/graphql-types';
 
 export class PlanValidator {
 

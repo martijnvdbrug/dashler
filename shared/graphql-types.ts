@@ -106,10 +106,10 @@ export interface UptimeStats extends GraphqlNode {
     id: string;
     createdAt?: Date;
     updatedAt?: Date;
-    ms0_100?: number;
-    ms100_500?: number;
+    ms0_500?: number;
     ms500_1?: number;
-    s1?: number;
+    s1_2?: number;
+    s2?: number;
     error?: number;
 }
 

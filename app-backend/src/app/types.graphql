@@ -44,10 +44,10 @@ type UptimeStats implements GraphqlNode {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  ms0_100: Int
-  ms100_500: Int
+  ms0_500: Int
   ms500_1: Int
-  s1: Int
+  s1_2: Int
+  s2: Int
   error: Int
 }
 

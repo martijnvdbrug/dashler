@@ -34,6 +34,23 @@ export class DatastoreClient<T extends DatastoreEntity> {
     return key.name;
   }
 
+  async saveMultiple(entities: Partial<T>[]): Promise<string[]> {
+    const datastoreEntities = entities.map(e => {
+      e.createdAt = new Date();
+      e.updatedAt = new Date();
+      if (!e.id) {
+        e.id = shortid.generate();
+      }
+      const key = this.createKey(e.id);
+      return {
+        key,
+        data: e
+      };
+    });
+    await this.datastore.save(datastoreEntities);
+    return datastoreEntities.map(e => e.key.name);
+  }
+
   /**
    * Updates given entity, fails if entity doesn't exists
    */

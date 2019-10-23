@@ -1,6 +1,6 @@
 import {Uptime} from '../lib/shared/graphql-types';
-import {UptimeRequest} from './uptime-request';
+import {UptimeCheck} from './uptime-check';
 
 export interface UptimeEntity extends Uptime {
-  requests: UptimeRequest[];
+  checks: UptimeCheck[];
 }

@@ -6,7 +6,7 @@ import {DashboardEntity} from './model/dashboard.entity';
 import {readableId} from '../../lib/readable-id';
 import {UserService} from '../user/user.service';
 import {UserEntity} from '../user/model/user.entity';
-import {PlanValidator} from './plan.validator';
+import {PlanValidator} from '../user/plan.validator';
 import normalizeUrl = require('normalize-url');
 
 
@@ -91,6 +91,7 @@ export class DashboardService {
       dashboard.users = [];
     }
     if (dashboard.users.indexOf(emailToAdd) > -1) {
+      await this.userService.addDashboard(emailToAdd, dashboardId);
       return dashboard;
     }
     PlanValidator.validateMembers(dashboard.users, plan);

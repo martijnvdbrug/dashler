@@ -2,7 +2,7 @@
   "name": "uptime",
   "version": "0.0.1",
   "description": "Uptime checker function for WhatsRunning.io",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Martijn van de Brug",
   "license": "MIT",
   "engines": {
@@ -10,11 +10,16 @@
   },
   "dependencies": {
     "@google-cloud/datastore": "^4.3.0",
+    "@google-cloud/pubsub": "^1.1.5",
     "dotenv": "^8.1.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
     "shortid": "^2.2.15"
   },
   "devDependencies": {
     "@types/node": "^12.7.12",
+    "@types/request-promise": "^4.1.44",
+    "@types/request-promise-native": "^1.0.17",
     "copyfiles": "^2.1.1",
     "nodemon": "^1.19.2",
     "ts-node": "^8.4.1",
@@ -25,7 +30,9 @@
     "compile": "yarn tsc && yarn copyfiles -u 1 src/**/*.graphql dist",
     "dev": "export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json && export GCLOUD_PROJECT=dasher-253813 && yarn nodemon --delay 0.5 -e ts  --exec \"yarn compile || exit 1 && yarn start \"",
     "script": "export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json && export GCLOUD_PROJECT=dasher-253813 && yarn ts-node",
-    "test": "yarn jest"
+    "deploy": "yarn compile && cd dist",
+    "deploy:batcher": "yarn deploy && gcloud functions deploy uptime_batchUrlsToPubsub --runtime=nodejs10 --trigger-http --region=europe-west1 --timeout=60 --project=dasher-253813",
+    "deploy:poller": "yarn deploy && gcloud functions deploy uptime_pollUrls --runtime nodejs10 --trigger-topic uptime-urls-to-poll --region=europe-west1 --timeout=60 --project=dasher-253813"
   },
   "jest": {
     "roots": [

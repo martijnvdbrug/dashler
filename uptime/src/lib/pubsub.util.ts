@@ -7,8 +7,7 @@ export class PubsubUtil {
     const attributes = {
       createdAt: new Date().toISOString()
     };
-    const messageId = await pubsub.topic(topicName).publish(Buffer.from(JSON.stringify(payload)), attributes);
-    console.log(`Published message ${messageId} to pubsub topic ${topicName}.`);
+    await pubsub.topic(topicName).publish(Buffer.from(JSON.stringify(payload)), attributes);
   }
 
   static async subscribe(topicName: string, subscriptionName: string, messageHandler: (...args: any[]) => void, errorHandler: (...args: any[]) => void) {
