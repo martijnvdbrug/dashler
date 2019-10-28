@@ -49,6 +49,8 @@ export class DashboardService {
   }
 
   async create(input: DashboardInput, email: string): Promise<DashboardEntity> {
+    const user = await this.userService.get(email);
+    PlanValidator.validateDashboards(user.dashboardIds, user.plan);
     const id = readableId(input.name);
     await Promise.all([
       this.dashboardRepo.save({
