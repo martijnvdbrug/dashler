@@ -154,10 +154,18 @@ export class DashboardPage implements OnInit {
   }
 
   async createDashboard() {
-    await this.dashboardService.createDashboard({
-      name: this.addDashboardForm.value.name,
-    });
-    this.addDashboardForm.reset();
+    try {
+      await this.dashboardService.createDashboard({
+        name: this.addDashboardForm.value.name,
+      });
+      this.addDashboardForm.reset();
+    } catch (e) {
+      if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'NotInPlanException') {
+        this.showSubcribeModal(e.graphQLErrors[0].message);
+      } else {
+        throw e;
+      }
+    }
   }
 
 }
