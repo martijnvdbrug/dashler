@@ -26,6 +26,7 @@ export class DashboardService {
   async addBlock(dashboardId: string, input: BlockInput): Promise<Dashboard> {
     const result = await this.apollo.mutate<any>({
       mutation: addBlockMutation,
+      errorPolicy: 'none',
       variables: {dashboardId, input}
     }).toPromise();
     return result.data.addBlock;
@@ -34,6 +35,7 @@ export class DashboardService {
   async createDashboard(input: DashboardInput): Promise<Dashboard> {
     const result = await this.apollo.mutate<any>({
       mutation: createDashboardMutation,
+      errorPolicy: 'none',
       variables: {input}
     }).toPromise();
     return result.data.createDashboard;
@@ -42,6 +44,7 @@ export class DashboardService {
   async removeBlock(dashboardId: string, blockId: string): Promise<Dashboard> {
     const result = await this.apollo.mutate<any>({
       mutation: removeBlockMutation,
+      errorPolicy: 'none',
       variables: {dashboardId, blockId}
     }).toPromise();
     return result.data.removeBlock;
