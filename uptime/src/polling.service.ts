@@ -13,6 +13,10 @@ export class PollingService {
   static datastore = new DatastoreClient<UptimeEntity>('Uptime');
 
   static async checkMultiple(urls: string[]): Promise<void> {
+    if (!urls || urls.length === 0) {
+      console.log('No urls in message, skipping');
+      return;
+    }
     const uptimes = await this.datastore.getMultiple(urls);
     const updated = await Promise.all(uptimes.map(u => this.check(u)));
     await this.datastore.saveMultiple(updated);

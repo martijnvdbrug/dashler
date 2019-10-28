@@ -29,8 +29,10 @@ export class BatchService {
       .map(u => u.id);
     while (urls.length) {
       const batch = urls.splice(0, 10);
-      // await PubsubUtil.publish(BatchService.topicname, urls);
-      console.log(`publishing ${batch.length} urls`);
+      if (batch && batch.length > 0) {
+        await PubsubUtil.publish(BatchService.topicname, batch);
+        console.log(`publishing ${batch.length} urls`);
+      }
     }
   }
 
