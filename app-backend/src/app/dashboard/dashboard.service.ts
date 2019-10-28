@@ -8,15 +8,16 @@ import {UserService} from '../user/user.service';
 import {UserEntity} from '../user/model/user.entity';
 import {PlanValidator} from '../user/plan.validator';
 import normalizeUrl = require('normalize-url');
+import {UptimeService} from './uptime.service';
 
 
 @Injectable()
 export class DashboardService {
 
   constructor(
+    private uptimeService: UptimeService,
     @Inject(forwardRef(() => UserService)) private userService: UserService,
     @Inject('DashboardRepo') private dashboardRepo: DatastoreClient<DashboardEntity>,
-    @Inject('UptimeRepo') private uptimeRepo: DatastoreClient<Uptime>
   ) {
   }
 
@@ -72,7 +73,7 @@ export class DashboardService {
     let createUptimePromise;
     if (input.uptimecheck) {
       PlanValidator.validateUptime(input.uptimecheck, plan);
-      createUptimePromise = this.createUptime(input.uptimecheck);
+      createUptimePromise = this.uptimeService.create(input.uptimecheck);
     }
     dashboard.blocks.push(DashboardAdapter.toBlock(input));
     await Promise.all([
@@ -110,37 +111,11 @@ export class DashboardService {
     }
     const block = dashboard.blocks.find(b => b.id === blockId);
     if (block) {
-      await this.removeUptime(block.url);
+      await this.uptimeService.remove(block.url);
     }
     dashboard.blocks = dashboard.blocks.filter(b => b.id !== blockId);
     await this.dashboardRepo.save(dashboard);
     return dashboard;
-  }
-
-  async createUptime(input: UptimeCheckInput): Promise<Uptime> {
-    if (await this.uptimeRepo.exists(input.url)) {
-      return this.uptimeRepo.get(input.url);
-    }
-    const id = normalizeUrl(input.url);
-    const uptime: Uptime = {
-        id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        checkInterval: Math.ceil(input.interval / 5) * 5,
-        webhook: input.webhook,
-        disabledHours: input.disabledHours
-      }
-    ;
-    await this.uptimeRepo.save(uptime);
-    return this.uptimeRepo.get(id);
-  }
-
-  async removeUptime(url: string): Promise<boolean> {
-    if (!url) {
-      return false;
-    }
-    await this.uptimeRepo.remove(normalizeUrl(url));
-    return true;
   }
 
 }

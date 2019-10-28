@@ -14,7 +14,6 @@ export const uptime_batchUrlsToPubsub = async (req, res) => {
 
 export const uptime_pollUrls = async (pubSubEvent, context) => {
   const urls: string[] = JSON.parse(Buffer.from(pubSubEvent.data, 'base64').toString());
-  console.log('URLSS', JSON.stringify(urls));
   await PollingService.checkMultiple(urls);
   return `success`;
 };

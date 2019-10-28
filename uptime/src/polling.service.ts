@@ -20,6 +20,7 @@ export class PollingService {
     const uptimes = await this.datastore.getMultiple(urls);
     const updated = await Promise.all(uptimes.map(u => this.check(u)));
     await this.datastore.saveMultiple(updated);
+    console.log(`Polled ${updated.length} urls`);
   }
 
   /**

@@ -17,12 +17,12 @@ export class LoaderComponent implements AfterViewInit {
   ];
 
   async ngAfterViewInit(): Promise<void> {
-    setTimeout(() => this.randomMessage(), 10000);
+    setTimeout(() => this.randomMessage(), 5000);
   }
 
   randomMessage() {
     this.message = this.messages[Math.floor(Math.random() * Math.floor(this.messages.length))];
-    setTimeout(() => this.randomMessage(), 10000);
+    setTimeout(() => this.randomMessage(), 5000);
   }
 
 }
