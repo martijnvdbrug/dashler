@@ -43,6 +43,9 @@ export class DashboardPage implements OnInit {
     button3Label: new FormControl(),
     button3Url: new FormControl(),
   });
+  addDashboardForm = new FormGroup({
+    name: new FormControl()
+  });
 
   constructor(
     private route: ActivatedRoute,
@@ -148,6 +151,13 @@ export class DashboardPage implements OnInit {
       from,
       to,
     };
+  }
+
+  async createDashboard() {
+    await this.dashboardService.createDashboard({
+      name: this.addDashboardForm.value.name,
+    });
+    this.addDashboardForm.reset();
   }
 
 }

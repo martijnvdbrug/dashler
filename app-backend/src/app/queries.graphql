@@ -8,8 +8,8 @@ type Query {
 }
 
 type Mutation {
-  createDashboard(input: DashboardInput): Dashboard @authenticated
-  addBlock(dashboardId: ID!, input: BlockInput): Dashboard @authenticated
+  createDashboard(input: DashboardInput!): Dashboard @authenticated
+  addBlock(dashboardId: ID!, input: BlockInput!): Dashboard @authenticated
   removeBlock(dashboardId: ID!, blockId: ID!): Dashboard @authenticated
 }
 

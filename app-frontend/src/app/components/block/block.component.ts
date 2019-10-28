@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, Input} from '@angular/core';
 import Chart from 'chart.js';
 import {uuid} from '../../../lib/uuid';
-import {Block, Uptime} from '../../../lib/shared/graphql-types';
+import {Block} from '../../../lib/shared/graphql-types';
 import {DashboardService} from '../../providers/dashboard.service';
 
 @Component({

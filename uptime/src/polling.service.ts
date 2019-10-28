@@ -41,7 +41,6 @@ export class PollingService {
     });
     uptime.stats = StatsService.calculate(uptime.checks, uptime.stats);
     uptime.stats = StatsService.normalize(uptime.stats); // normalize to add up to 100%
-    console.log('statss', uptime.stats);
     return uptime;
   }
 

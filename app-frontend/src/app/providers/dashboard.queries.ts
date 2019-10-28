@@ -48,7 +48,7 @@ export const getDashboardQuery = gql`
 
 export const addBlockMutation = gql`
     ${dashboardFields}
-    mutation addBlock($dashboardId: ID!, $input: BlockInput) {
+    mutation addBlock($dashboardId: ID!, $input: BlockInput!) {
         addBlock(dashboardId: $dashboardId, input: $input) {
             ...dashboardFields
         }
@@ -58,6 +58,14 @@ export const removeBlockMutation = gql`
     ${dashboardFields}
     mutation removeBlock($dashboardId: ID!, $blockId: ID!) {
         removeBlock(dashboardId: $dashboardId, blockId: $blockId) {
+            ...dashboardFields
+        }
+    }`;
+
+export const createDashboardMutation = gql`
+    ${dashboardFields}
+    mutation createDashboard($input: DashboardInput!) {
+        createDashboard(input: $input) {
             ...dashboardFields
         }
     }`;

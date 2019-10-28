@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {BlockInput, Dashboard} from '../../lib/shared/graphql-types';
-import {addBlockMutation, getDashboardQuery, removeBlockMutation} from './dashboard.queries';
+import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
+import {addBlockMutation, createDashboardMutation, getDashboardQuery, removeBlockMutation} from './dashboard.queries';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Apollo} from 'apollo-angular-boost';
@@ -17,6 +17,7 @@ export class DashboardService {
     return this.apollo.watchQuery<any>({
       query: getDashboardQuery,
       pollInterval: 1000 * 60,
+      errorPolicy: 'all',
       variables: {id}
     }).valueChanges
       .pipe(map((result: any) => result.data.Dashboard));
@@ -28,6 +29,14 @@ export class DashboardService {
       variables: {dashboardId, input}
     }).toPromise();
     return result.data.addBlock;
+  }
+
+  async createDashboard(input: DashboardInput): Promise<Dashboard> {
+    const result = await this.apollo.mutate<any>({
+      mutation: createDashboardMutation,
+      variables: {input}
+    }).toPromise();
+    return result.data.createDashboard;
   }
 
   async removeBlock(dashboardId: string, blockId: string): Promise<Dashboard> {

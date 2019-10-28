@@ -36,22 +36,6 @@ import {LoaderComponent} from './components/loader/loader.component';
     AuthGuard,
     DashboardService,
     UserService,
-/*    {
-      provide: APOLLO_BOOST_CONFIG,
-      useFactory() {
-        return {
-          uri: `${environment.authServer}/graphql`,
-          request: (operation) => {
-            const token = localStorage.getItem('token');
-            operation.setContext({
-              headers: {
-                authorization: token ? `Bearer ${token}` : ''
-              }
-            });
-          }
-        };
-      }
-    }*/
   ],
   bootstrap: [AppComponent]
 })

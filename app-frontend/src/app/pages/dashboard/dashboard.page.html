@@ -69,6 +69,10 @@
         </li>
 
       </ul>
+      <button class="btn btn-icon btn-2 btn-secondary" type="button" data-toggle="modal" data-target="#addDashboardModal">
+        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+        <span class="btn-inner--text">Add dashboard</span>
+      </button>
       <!-- Divider -->
       <hr class="my-3">
       <!-- Heading -->
@@ -250,6 +254,33 @@
       </div>
     </div>
 
+    <!-- Add dashboard  modal-->
+    <div class="modal fade" id="addDashboardModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="dashboardTitle">Add new dashboard</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="addDashboardForm">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="dashboardName" placeholder="Name" formControlName="name">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="createDashboard()">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 

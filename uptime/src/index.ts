@@ -1,7 +1,7 @@
 import {PollingService} from './polling.service';
 import {BatchService} from './batch.service';
 
-export const uptime_batchUrlsToPubsub = async (req, res) => {
+export const uptime_batcher = async (req, res) => {
   try {
     await BatchService.publishUrls();
   } catch (e) {
@@ -12,7 +12,7 @@ export const uptime_batchUrlsToPubsub = async (req, res) => {
   res.send(`success`);
 };
 
-export const uptime_pollUrls = async (pubSubEvent, context) => {
+export const uptime_poller = async (pubSubEvent, context) => {
   const urls: string[] = JSON.parse(Buffer.from(pubSubEvent.data, 'base64').toString());
   await PollingService.checkMultiple(urls);
   return `success`;
