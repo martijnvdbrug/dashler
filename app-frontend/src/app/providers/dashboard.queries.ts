@@ -20,9 +20,10 @@ export const dashboardFields = gql`
                 checkInterval
                 webhook
                 stats {
-                    ms0_100
-                    ms100_500
-                    s1
+                    ms0_500
+                    ms500_1
+                    s1_2
+                    s2
                     error
                 }
                 disabledHours {

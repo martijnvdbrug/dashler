@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BlockInput, Dashboard} from '../../../../shared/graphql-types';
+import {BlockInput, Dashboard} from '../../lib/shared/graphql-types';
 import {addBlockMutation, getDashboardQuery, removeBlockMutation} from './dashboard.queries';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';

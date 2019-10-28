@@ -22,7 +22,8 @@ import {UptimeService} from './uptime.service';
     }
   ],
   exports: [
-    DashboardService
+    DashboardService,
+    UptimeService
   ]
 })
 export class DashboardModule {

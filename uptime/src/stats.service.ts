@@ -45,14 +45,14 @@ export class StatsService {
    */
   static normalize(stats: UptimeStats) {
     const total = stats.ms0_500 + stats.ms500_1 + stats.s1_2 + stats.s2 + stats.error;
-    const ratio = total / 100;
+    const ratio = 100 / total;
     return {
       ...stats,
-      ms0_500: stats.ms0_500 * ratio,
-      ms500_1: stats.ms500_1 * ratio,
-      s1_2: stats.s1_2 * ratio,
-      s2: stats.s2 * ratio,
-      error: stats.error * ratio
+      ms0_500: Math.round(stats.ms0_500 * ratio),
+      ms500_1: Math.round(stats.ms500_1 * ratio),
+      s1_2: Math.round(stats.s1_2 * ratio),
+      s2: Math.round(stats.s2 * ratio),
+      error: Math.round(stats.error * ratio)
     };
   }
 

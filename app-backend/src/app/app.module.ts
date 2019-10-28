@@ -7,6 +7,7 @@ import {AuthenticatedDirective} from './user/authenticated.directive';
 import {UserResolver} from './resolvers/user.resolver';
 import {QueryResolver} from './resolvers/query.resolver';
 import {MutationResolver} from './resolvers/mutation.resolver';
+import {BlockResolver} from './resolvers/block.resolver';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import {MutationResolver} from './resolvers/mutation.resolver';
     QueryResolver,
     MutationResolver,
     UserResolver,
+    BlockResolver
   ]
 })
 export class AppModule {
