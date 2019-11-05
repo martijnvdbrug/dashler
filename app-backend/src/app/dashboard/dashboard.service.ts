@@ -1,5 +1,5 @@
 import {ForbiddenException, forwardRef, Inject, Injectable} from '@nestjs/common';
-import {BlockInput, Dashboard, DashboardInput, Uptime, UptimeCheckInput} from '../../lib/shared/graphql-types';
+import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
@@ -7,7 +7,6 @@ import {readableId} from '../../lib/readable-id';
 import {UserService} from '../user/user.service';
 import {UserEntity} from '../user/model/user.entity';
 import {PlanValidator} from '../user/plan.validator';
-import normalizeUrl = require('normalize-url');
 import {UptimeService} from './uptime.service';
 
 
@@ -61,6 +60,20 @@ export class DashboardService {
       this.userService.addDashboard(email, id)
     ]);
     return this.get(id, email);
+  }
+
+  async remove(id: string, email: string): Promise<boolean> {
+    const dashboard = await this.get(dashboardId, email);
+    if (!Array.isArray(dashboard.blocks)) {
+      return dashboard;
+    }
+    const block = dashboard.blocks.find(b => b.id === blockId);
+    if (block) {
+      await this.uptimeService.remove(block.url);
+    }
+    dashboard.blocks = dashboard.blocks.filter(b => b.id !== blockId);
+    await this.dashboardRepo.save(dashboard);
+    return dashboard;
   }
 
   async addBlock(dashboardId: string, input: BlockInput, email: string): Promise<DashboardEntity> {

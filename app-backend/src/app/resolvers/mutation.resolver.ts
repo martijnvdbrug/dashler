@@ -17,6 +17,13 @@ export class MutationResolver {
   }
 
   @Mutation()
+  async removeDashboard(
+    @Args('id') id: string,
+    @Context('email') email: string): Promise<boolean> {
+    return this.dashboardService.remove(id, email);
+  }
+
+  @Mutation()
   async addBlock(
     @Args('dashboardId') dashboardId: string,
     @Args('input') input: BlockInput,
