@@ -34,7 +34,7 @@ export class DashboardService {
     if (dashboard.users && dashboard.users.indexOf(email) > -1) {
       return dashboard;
     }
-    throw new ForbiddenException(`You are not allowed to view this dashboard`);
+    throw new ForbiddenException(`You are not allowed to view/edit this dashboard`);
   }
 
   async getFirstForUser(email: string): Promise<DashboardEntity> {
@@ -63,17 +63,13 @@ export class DashboardService {
   }
 
   async remove(id: string, email: string): Promise<boolean> {
-    const dashboard = await this.get(dashboardId, email);
-    if (!Array.isArray(dashboard.blocks)) {
-      return dashboard;
-    }
-    const block = dashboard.blocks.find(b => b.id === blockId);
-    if (block) {
-      await this.uptimeService.remove(block.url);
-    }
-    dashboard.blocks = dashboard.blocks.filter(b => b.id !== blockId);
-    await this.dashboardRepo.save(dashboard);
-    return dashboard;
+    const dashboard = await this.get(id, email);
+    const blocks = dashboard.blocks ? dashboard.blocks : [];
+    await Promise.all(blocks.map(block => this.uptimeService.remove(block.url)));
+    const users = dashboard.users ? dashboard.users : [];
+    users.map(user => this.userService.removeDashboard(user, id));
+    await this.dashboardRepo.remove(id);
+    return true;
   }
 
   async addBlock(dashboardId: string, input: BlockInput, email: string): Promise<DashboardEntity> {

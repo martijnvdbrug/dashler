@@ -97,6 +97,21 @@ export class UserService {
     return true;
   }
 
+  async removeDashboard(email: string, dashboardId: string): Promise<boolean> {
+    let user: UserEntity;
+    try {
+      user = await this.get(email);
+    } catch (e) {
+      return false;
+    }
+    if (!user.dashboardIds || !Array.isArray(user.dashboardIds || user.dashboardIds.indexOf(dashboardId) === -1)) {
+      return false;
+    }
+    user.dashboardIds = user.dashboardIds.filter(id => id !== dashboardId);
+    await this.userRepo.save(user);
+    return true;
+  }
+
   getDefaultPlan(email: string): Plan {
     return {
       id: readableId(email),
