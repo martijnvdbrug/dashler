@@ -8,6 +8,15 @@
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'/>
   <meta name="viewport" content="width=device-width"/>
 
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-153320321-1"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-153320321-1', { 'anonymize_ip': true });
+  </script>
+
   <link href="assets/css/bootstrap.css" rel="stylesheet"/>
   <link href="assets/css/landing-page.css" rel="stylesheet"/>
 
@@ -114,10 +123,10 @@
         </div>
         <div class="col-md-5 col-md-offset-1 features-list">
           <h4 class="header-text">How does it work?</h4>
-          <p><strong>Give it a name </strong> so it’s easily recognizable in the dashboard.</p>
-          <p><strong>Add responsetime measurements</strong> using the url of your service to measure response time and error rate.</p>
-          <p><strong>Add uptime notifications</strong> when your service is down.</p>
+          <!--<p><strong>Give it a name </strong> so it’s easily recognizable in the dashboard.</p>-->
+          <p><strong>Add the URL</strong> of your service to measure response time and error rate.</p>
           <p><strong>Add buttons</strong> to your service. Like the url to your cloud UI or Git repository.</p>
+          <p><strong>Get notified</strong> when your service is down.</p>
           <p><strong>Enjoy the view </strong> of your services in the dashboard. Add more service-blocks whenever you like.</p>
           <a href="https://app.whatsrunning.io" target="_blank" class="btn btn-fill btn-info" data-button="info">Go to app</a>
         </div>
