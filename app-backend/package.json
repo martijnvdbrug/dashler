@@ -24,13 +24,15 @@
     "passport-google-oauth20": "^2.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.3",
-    "shortid": "^2.2.15"
+    "shortid": "^2.2.15",
+    "stripe": "^7.14.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.8.1",
     "@nestjs/testing": "^6.7.2",
     "@types/jest": "^24.0.18",
     "@types/jsonwebtoken": "^8.3.4",
+    "@types/stripe": "^7.13.11",
     "copyfiles": "^2.1.1",
     "jest": "^24.9.0",
     "nodemon": "^1.19.2",

@@ -8,6 +8,7 @@ import {UserResolver} from './resolvers/user.resolver';
 import {QueryResolver} from './resolvers/query.resolver';
 import {MutationResolver} from './resolvers/mutation.resolver';
 import {BlockResolver} from './resolvers/block.resolver';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import {BlockResolver} from './resolvers/block.resolver';
     }),
     DashboardModule,
     UserModule,
+    PaymentModule,
   ],
   providers: [
     InterfaceResolver,
