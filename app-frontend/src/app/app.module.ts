@@ -14,6 +14,7 @@ import {UserService} from './providers/user.service';
 import {environment} from '../environments/environment';
 import {ApolloBoostModule, APOLLO_BOOST_CONFIG, ApolloBoost} from 'apollo-angular-boost';
 import {LoaderComponent} from './components/loader/loader.component';
+import {PaymentPage} from './pages/payment/payment.page';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {LoaderComponent} from './components/loader/loader.component';
     DashboardPage,
     LoginPage,
     LoginHandler,
-    LoaderComponent
+    LoaderComponent,
+    PaymentPage
   ],
   imports: [
     BrowserModule,

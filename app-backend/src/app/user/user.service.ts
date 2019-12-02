@@ -124,4 +124,16 @@ export class UserService {
     };
   }
 
+  getPROPlan(email: string): Plan {
+    return {
+      id: readableId(email),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      maxBlocks: 50,
+      maxDashboards: 5,
+      maxUptimeInterval: 5,
+      maxMembers: 5,
+    };
+  }
+
 }

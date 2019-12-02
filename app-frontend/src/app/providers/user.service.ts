@@ -3,7 +3,7 @@ import {JwtPayload} from '../../lib/shared/jwt.payload';
 import {User} from '../../lib/shared/graphql-types';
 import {catchError, map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {getMeQuery, getMeWithDashboardQuery} from './user.queries';
+import {getMeQuery, getMeWithDashboardQuery, getStripeSessionIdQuery} from './user.queries';
 import {Apollo} from 'apollo-angular-boost';
 import {Router} from '@angular/router';
 import * as jwt_decode from 'jwt-decode';
@@ -42,6 +42,13 @@ export class UserService {
       .pipe(
         catchError((e) => this.errorAndLogout(e)),
         map(result => result.data.Me));
+  }
+
+  async getStripeSessionId(): Promise<string> {
+    const {data: {StripeSessionId}} = await this.apollo.query<any>({
+      query: getStripeSessionIdQuery,
+    }).toPromise() as any;
+    return StripeSessionId;
   }
 
   errorAndLogout(e): Observable<any> {

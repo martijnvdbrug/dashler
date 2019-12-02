@@ -5,4 +5,6 @@ export interface ConfigInterface {
   host;
   appHost;
   stripeSecret;
+  stripePROPlan;
+  stripeWebhookSecret;
 }

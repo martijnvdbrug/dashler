@@ -34,3 +34,8 @@ export const getMeWithDashboardQuery = gql`
         }
     }`;
 
+export const getStripeSessionIdQuery = gql`
+    query StripeSessionId {
+        StripeSessionId
+    }`;
+

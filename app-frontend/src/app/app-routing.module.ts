@@ -4,6 +4,7 @@ import {DashboardPage} from './pages/dashboard/dashboard.page';
 import {LoginPage} from './pages/login/login.page';
 import {AuthGuard} from './guards/auth.guard';
 import {LoginHandler} from './pages/login/login.handler';
+import {PaymentPage} from './pages/payment/payment.page';
 
 
 const routes: Routes = [
@@ -13,6 +14,7 @@ const routes: Routes = [
   {path: 'login', component: LoginPage},
   {path: 'dashboard', component: DashboardPage, canActivate: [AuthGuard]},
   {path: 'dashboard/:id', component: DashboardPage, canActivate: [AuthGuard]},
+  {path: 'payment', component: PaymentPage, canActivate: [AuthGuard]},
 ];
 
 @NgModule({

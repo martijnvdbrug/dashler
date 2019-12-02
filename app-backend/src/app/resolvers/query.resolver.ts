@@ -3,13 +3,15 @@ import {BlockInput, Dashboard, DashboardInput, User} from '../../lib/shared/grap
 import {DashboardService} from '../dashboard/dashboard.service';
 import {Injectable} from '@nestjs/common';
 import {UserService} from '../user/user.service';
+import {PaymentService} from '../payment/payment.service';
 
 @Injectable()
 export class QueryResolver {
 
   constructor(
     private dashboardService: DashboardService,
-    private userService: UserService
+    private userService: UserService,
+    private paymentService: PaymentService
   ) {
   }
 
@@ -24,6 +26,11 @@ export class QueryResolver {
   @Query('Me')
   async getUser(@Context('email') email: string): Promise<User> {
     return this.userService.get(email);
+  }
+
+  @Query('StripeSessionId')
+  async getStripeSessionId(@Context('email') email: string): Promise<string> {
+    return this.paymentService.getSessionId(email);
   }
 
 }

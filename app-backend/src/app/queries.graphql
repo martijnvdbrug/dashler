@@ -5,6 +5,8 @@ type Query {
   Dashboard(id: ID): Dashboard! @authenticated
   # Get the currently logged in User.
   Me: User @authenticated
+  # Get Stripe SessionID.
+  StripeSessionId: String! @authenticated
 }
 
 type Mutation {
