@@ -112,6 +112,17 @@ export class UserService {
     return true;
   }
 
+  async upgradeToPROPlan(email: string): Promise<UserEntity> {
+    const user = await this.get(email);
+    const newUser = {
+      ...user,
+      updatedAt: new Date(),
+      plan: this.getPROPlan(email)
+    }
+    await this.userRepo.save(newUser);
+    return newUser;
+  }
+
   getDefaultPlan(email: string): Plan {
     return {
       id: readableId(email),
