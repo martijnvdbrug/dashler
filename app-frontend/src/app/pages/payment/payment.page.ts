@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../providers/user.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'payment-page',
@@ -9,12 +10,31 @@ import {UserService} from '../../providers/user.service';
 })
 export class PaymentPage implements OnInit {
 
+  success: boolean = undefined;
+
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
     private userService: UserService
   ) {
   }
 
   async ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+      const success = params.get('success');
+      if (success === 'success') {
+        this.success = true;
+        setTimeout(() => this.router.navigate(['/dashboard']), 5000);
+      } else if (success === 'failure') {
+        this.success = false;
+      } else {
+        this.success = undefined;
+        this.redirectToStripe();
+      }
+    });
+  }
+
+  async redirectToStripe(): Promise<void> {
     const [sessionId] = await Promise.all([
       this.userService.getStripeSessionId(),
       this.loadScript('https://js.stripe.com/v3/')

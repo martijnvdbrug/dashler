@@ -15,6 +15,7 @@ const routes: Routes = [
   {path: 'dashboard', component: DashboardPage, canActivate: [AuthGuard]},
   {path: 'dashboard/:id', component: DashboardPage, canActivate: [AuthGuard]},
   {path: 'payment', component: PaymentPage, canActivate: [AuthGuard]},
+  {path: 'payment/:success', component: PaymentPage, canActivate: [AuthGuard]},
 ];
 
 @NgModule({

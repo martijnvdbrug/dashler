@@ -25,8 +25,8 @@ export class PaymentService {
           plan: CONFIG.stripePROPlan, // PRO plan
         }],
       },
-      success_url: `${CONFIG.host}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${CONFIG.host}/payment/failure`,
+      success_url: `${CONFIG.appHost}/payment?success`,
+      cancel_url: `${CONFIG.appHost}/payment?failure`,
     });
     return session.id;
   }
