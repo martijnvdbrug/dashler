@@ -4,9 +4,10 @@ import {CONFIG} from '../../lib/config/config';
 
 export class AuthUtil {
 
-  static generateJWT(email: string): string {
+  static generateJWT(email: string, teamId?: string): string {
     const payload: JwtPayload = {
       email,
+      team: teamId,
       iat: Date.now()
     };
     return jwt.sign(payload, CONFIG.jwtSecret, {

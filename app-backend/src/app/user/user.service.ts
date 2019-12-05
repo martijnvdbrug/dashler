@@ -4,13 +4,14 @@ import {UserInput} from './model/user.input';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {AuthUtil} from './auth.util';
 import {DashboardService} from '../dashboard/dashboard.service';
-import {Plan} from '../../lib/shared/graphql-types';
-import {readableId} from '../../lib/readable-id';
+import {Plans} from './model/plans';
+import {TeamService} from '../team/team.service';
 
 @Injectable()
 export class UserService {
 
   constructor(
+    private teamService: TeamService,
     @Inject('UserRepo') private userRepo: DatastoreClient<UserEntity>,
     @Inject(forwardRef(() => DashboardService)) private dashboardService: DashboardService
   ) {
@@ -31,7 +32,6 @@ export class UserService {
       lastLogin: new Date(),
       provider: input.provider,
       dashboardIds: [],
-      plan: this.getDefaultPlan(input.email)
     };
     await this.userRepo.save(user);
     return user;
@@ -49,7 +49,11 @@ export class UserService {
   }
 
   async login(input: UserInput): Promise<string> {
-    const user = await this.get(input.email);
+
+    const [user, team] = await Promise.all([
+      this.get(input.email),
+      this.teamService.getTeamOfMember(input.email)
+    ]);
     await this.userRepo.save({ // Update data when login
       ...user,
       firstname: input.firstname,
@@ -60,7 +64,7 @@ export class UserService {
       provider: input.provider,
       lastLogin: new Date()
     });
-    return AuthUtil.generateJWT(input.email);
+    return AuthUtil.generateJWT(input.email, team ? team.id : undefined);
   }
 
   /**
@@ -74,7 +78,7 @@ export class UserService {
       return this.login(user);
     }
     await this.create(user);
-    return AuthUtil.generateJWT(user.email);
+    return AuthUtil.generateJWT(user.email, undefined);
   }
 
   async addDashboard(email: string, dashboardId: string): Promise<boolean> {
@@ -117,34 +121,10 @@ export class UserService {
     const newUser = {
       ...user,
       updatedAt: new Date(),
-      plan: this.getPROPlan(email)
-    }
+      plan: Plans.getPROPlan(email)
+    };
     await this.userRepo.save(newUser);
     return newUser;
-  }
-
-  getDefaultPlan(email: string): Plan {
-    return {
-      id: readableId(email),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      maxBlocks: 9,
-      maxDashboards: 1,
-      maxUptimeInterval: 60,
-      maxMembers: 1,
-    };
-  }
-
-  getPROPlan(email: string): Plan {
-    return {
-      id: readableId(email),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      maxBlocks: 50,
-      maxDashboards: 5,
-      maxUptimeInterval: 5,
-      maxMembers: 5,
-    };
   }
 
 }

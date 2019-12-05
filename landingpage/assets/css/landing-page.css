@@ -1188,7 +1188,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de8e0009', e
 
    .landing-page .section-features .card{
         width: 100%;
-        min-height: 390px;
+        min-height: 430px;
         padding: 10px 30px;
         border: 1px solid #DDDDDD;
         border-radius: 10px;

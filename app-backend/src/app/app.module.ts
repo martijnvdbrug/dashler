@@ -9,6 +9,7 @@ import {QueryResolver} from './resolvers/query.resolver';
 import {MutationResolver} from './resolvers/mutation.resolver';
 import {BlockResolver} from './resolvers/block.resolver';
 import { PaymentModule } from './payment/payment.module';
+import { TeamModule } from './team/team.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PaymentModule } from './payment/payment.module';
     DashboardModule,
     UserModule,
     PaymentModule,
+    TeamModule,
   ],
   providers: [
     InterfaceResolver,

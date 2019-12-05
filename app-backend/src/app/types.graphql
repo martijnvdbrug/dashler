@@ -68,7 +68,14 @@ type User implements GraphqlNode {
   firstname: String
   familyname: String
   picture: String
-  dashboards: [Dashboard]
+  team: Team
+}
+
+type Team implements GraphqlNode {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  members: [User]
   plan: Plan
 }
 
@@ -80,5 +87,4 @@ type Plan implements GraphqlNode {
   maxBlocks: Int
   maxUptimeInterval: Int
   maxMembers: Int
-  webhookNotifications: Boolean
 }

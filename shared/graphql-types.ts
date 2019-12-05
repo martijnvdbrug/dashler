@@ -71,8 +71,9 @@ export interface HourRange {
 }
 
 export interface IMutation {
-    createDashboard(input?: DashboardInput): Dashboard | Promise<Dashboard>;
-    addBlock(dashboardId: string, input?: BlockInput): Dashboard | Promise<Dashboard>;
+    createDashboard(input: DashboardInput): Dashboard | Promise<Dashboard>;
+    removeDashboard(id: string): boolean | Promise<boolean>;
+    addBlock(dashboardId: string, input: BlockInput): Dashboard | Promise<Dashboard>;
     removeBlock(dashboardId: string, blockId: string): Dashboard | Promise<Dashboard>;
 }
 
@@ -84,12 +85,20 @@ export interface Plan extends GraphqlNode {
     maxBlocks?: number;
     maxUptimeInterval?: number;
     maxMembers?: number;
-    webhookNotifications?: boolean;
 }
 
 export interface IQuery {
     Dashboard(id?: string): Dashboard | Promise<Dashboard>;
     Me(): User | Promise<User>;
+    StripeSessionId(): string | Promise<string>;
+}
+
+export interface Team extends GraphqlNode {
+    id: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    members?: User[];
+    plan?: Plan;
 }
 
 export interface Uptime extends GraphqlNode {
@@ -122,6 +131,5 @@ export interface User extends GraphqlNode {
     firstname?: string;
     familyname?: string;
     picture?: string;
-    dashboards?: Dashboard[];
-    plan?: Plan;
+    team?: Team;
 }
