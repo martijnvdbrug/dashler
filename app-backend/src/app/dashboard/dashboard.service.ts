@@ -1,13 +1,13 @@
-import {ForbiddenException, forwardRef, Inject, Injectable} from '@nestjs/common';
-import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
+import {ForbiddenException, Inject, Injectable} from '@nestjs/common';
+import {BlockInput, DashboardInput} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
 import {readableId} from '../../lib/readable-id';
-import {UserService} from '../user/user.service';
-import {UserEntity} from '../user/model/user.entity';
-import {PlanValidator} from '../user/plan.validator';
+import {PlanValidator} from '../plan/plan.validator';
 import {UptimeService} from './uptime.service';
+import {TeamService} from '../team/team.service';
+import {TeamEntity} from '../team/model/team.entity';
 
 
 @Injectable()
@@ -15,67 +15,56 @@ export class DashboardService {
 
   constructor(
     private uptimeService: UptimeService,
-    @Inject(forwardRef(() => UserService)) private userService: UserService,
+    private teamService: TeamService,
     @Inject('DashboardRepo') private dashboardRepo: DatastoreClient<DashboardEntity>,
   ) {
   }
 
   /**
-   * Gets dashboard by id. Validates if it belongs to email if an emailAddress is given.
+   * Gets dashboard by id. Validates if it belongs to team if a teamId is given.
    */
-  async get(id: string, email?: string): Promise<DashboardEntity> {
+  async get(id: string, teamId?: string): Promise<DashboardEntity> {
     const dashboard = await this.dashboardRepo.get(id);
     if (!dashboard) {
       throw Error(`Dashboard ${id} not found.`);
     }
-    if (!email) {
+    if (!teamId) {
       return dashboard;
     }
-    if (dashboard.users && dashboard.users.indexOf(email) > -1) {
-      return dashboard;
+    if (dashboard.teamId !== teamId) {
+      throw new ForbiddenException(`You are not allowed to view/edit this dashboard`);
     }
-    throw new ForbiddenException(`You are not allowed to view/edit this dashboard`);
+    return dashboard;
   }
 
-  async getFirstForUser(email: string): Promise<DashboardEntity> {
-    const user = await this.userService.get(email);
-    return this.dashboardRepo.get(user.dashboardIds[0]);
-  }
-
-  async getForUser(email: string): Promise<Dashboard[]> {
-    const user = await this.userService.get(email);
-    return await this.dashboardRepo.getMultiple(user.dashboardIds);
-  }
-
-  async create(input: DashboardInput, email: string): Promise<DashboardEntity> {
-    const user = await this.userService.get(email);
-    PlanValidator.validateDashboards(user.dashboardIds, user.plan);
+  async create(input: DashboardInput, teamId: string): Promise<DashboardEntity> {
+    const team = await this.teamService.get(teamId);
+    PlanValidator.validateDashboards(team.dashboardIds, team.plan);
     const id = readableId(input.name);
     await Promise.all([
       this.dashboardRepo.save({
         id,
         name: input.name,
-        users: [email]
+        teamId
       }),
-      this.userService.addDashboard(email, id)
+      this.teamService.addDashboard(teamId, id)
     ]);
-    return this.get(id, email);
+    return this.get(id);
   }
 
-  async remove(id: string, email: string): Promise<boolean> {
-    const dashboard = await this.get(id, email);
+  async remove(id: string, teamId: string): Promise<boolean> {
+    const dashboard = await this.get(id, teamId);
     const blocks = dashboard.blocks ? dashboard.blocks : [];
     await Promise.all(blocks.map(block => this.uptimeService.remove(block.url)));
-    const users = dashboard.users ? dashboard.users : [];
-    users.map(user => this.userService.removeDashboard(user, id));
+    await this.teamService.removeDashboard(dashboard.teamId, id);
     await this.dashboardRepo.remove(id);
     return true;
   }
 
-  async addBlock(dashboardId: string, input: BlockInput, email: string): Promise<DashboardEntity> {
-    const [{plan}, dashboard]: [UserEntity, DashboardEntity] = await Promise.all([
-      this.userService.get(email),
-      this.get(dashboardId, email)
+  async addBlock(dashboardId: string, input: BlockInput, teamId: string): Promise<DashboardEntity> {
+    const [{plan}, dashboard]: [TeamEntity, DashboardEntity] = await Promise.all([
+      this.teamService.get(teamId),
+      this.get(dashboardId, teamId)
     ]);
     if (!Array.isArray(dashboard.blocks)) {
       dashboard.blocks = [];
@@ -94,29 +83,8 @@ export class DashboardService {
     return dashboard;
   }
 
-  async addUser(dashboardId: string, emailToAdd: string, loggedInUserEmail: string): Promise<DashboardEntity> {
-    const [{plan}, dashboard]: [UserEntity, DashboardEntity] = await Promise.all([
-      this.userService.get(loggedInUserEmail),
-      this.get(dashboardId, loggedInUserEmail)
-    ]);
-    if (!Array.isArray(dashboard.users)) {
-      dashboard.users = [];
-    }
-    if (dashboard.users.indexOf(emailToAdd) > -1) {
-      await this.userService.addDashboard(emailToAdd, dashboardId);
-      return dashboard;
-    }
-    PlanValidator.validateMembers(dashboard.users, plan);
-    dashboard.users.push(emailToAdd);
-    await Promise.all([
-      this.userService.addDashboard(emailToAdd, dashboardId),
-      this.dashboardRepo.save(dashboard)
-    ]);
-    return dashboard;
-  }
-
-  async removeBlock(dashboardId: string, blockId: string, email: string): Promise<DashboardEntity> {
-    const dashboard = await this.get(dashboardId, email);
+  async removeBlock(dashboardId: string, blockId: string, teamId: string): Promise<DashboardEntity> {
+    const dashboard = await this.get(dashboardId, teamId);
     if (!Array.isArray(dashboard.blocks)) {
       return dashboard;
     }
@@ -127,6 +95,19 @@ export class DashboardService {
     dashboard.blocks = dashboard.blocks.filter(b => b.id !== blockId);
     await this.dashboardRepo.save(dashboard);
     return dashboard;
+  }
+
+  async getFirstForTeam(teamId: string): Promise<DashboardEntity> {
+    const dashboards = await this.getForTeam(teamId);
+    return dashboards[0];
+  }
+
+  async getForTeam(teamId: string): Promise<DashboardEntity[]> {
+    return this.dashboardRepo.query({
+      property: 'teamId',
+      operator: '=',
+      value: teamId
+    });
   }
 
 }

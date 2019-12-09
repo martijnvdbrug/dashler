@@ -2,13 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {DashboardService} from '../../providers/dashboard.service';
 import {Observable} from 'rxjs';
-import {ButtonInput, Dashboard, HourRange, UptimeCheckInput, User} from '../../../lib/shared/graphql-types';
+import {ButtonInput, Dashboard, HourRange, Plan, Team, UptimeCheckInput, User} from '../../../lib/shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../providers/user.service';
-import {map} from 'rxjs/operators';
 import {ApolloError} from 'apollo-angular-boost';
 import {environment} from '../../../environments/environment';
+import {TeamService} from '../../providers/team.service';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'dashboard-page',
@@ -18,13 +19,13 @@ import {environment} from '../../../environments/environment';
 export class DashboardPage implements OnInit {
 
   loading = true;
+  isPro = false;
   dashboard$: Observable<Dashboard>;
   environment = environment;
-  /**
-   * AllDashboards only incudes names and ID's in this context
-   */
   allDashboards$: Observable<Dashboard[]>;
   user$: Observable<User>;
+  team$: Observable<Team>;
+  plan$: Observable<Plan>;
   dashboardId: string;
   subscriptionMessage: string;
   addBlockForm = new FormGroup({
@@ -51,6 +52,7 @@ export class DashboardPage implements OnInit {
     private route: ActivatedRoute,
     private dashboardService: DashboardService,
     private userService: UserService,
+    private teamService: TeamService,
     private location: Location
   ) {
   }
@@ -64,8 +66,11 @@ export class DashboardPage implements OnInit {
         this.loading = false;
       });
     });
-    this.user$ = this.userService.getMeWithDasboards();
-    this.allDashboards$ = this.user$.pipe(map(user => user.dashboards));
+    this.user$ = this.userService.getUser();
+    this.team$ = this.teamService.getTeam();
+    this.allDashboards$ = this.team$.pipe(map(team => team.dashboards));
+    this.plan$ = this.team$.pipe(map(team => team.plan));
+    this.plan$.subscribe(plan => this.isPro = plan.maxMembers > 1);
   }
 
   async addBlock(): Promise<void> {
@@ -130,10 +135,6 @@ export class DashboardPage implements OnInit {
 
   logout() {
     this.userService.logout();
-  }
-
-  isPro(): boolean {
-    return false;
   }
 
   /**

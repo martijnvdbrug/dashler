@@ -4,7 +4,7 @@ import {DashboardModule} from './dashboard/dashboard.module';
 import {InterfaceResolver} from './interface.resolver';
 import {UserModule} from './user/user.module';
 import {AuthenticatedDirective} from './user/authenticated.directive';
-import {UserResolver} from './resolvers/user.resolver';
+import {TeamResolver} from './resolvers/team.resolver';
 import {QueryResolver} from './resolvers/query.resolver';
 import {MutationResolver} from './resolvers/mutation.resolver';
 import {BlockResolver} from './resolvers/block.resolver';
@@ -39,7 +39,7 @@ import { TeamModule } from './team/team.module';
     InterfaceResolver,
     QueryResolver,
     MutationResolver,
-    UserResolver,
+    TeamResolver,
     BlockResolver
   ]
 })

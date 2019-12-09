@@ -1,12 +1,7 @@
-import {ForbiddenException, forwardRef, Inject, Injectable} from '@nestjs/common';
-import {BlockInput, Dashboard, DashboardInput, Uptime, UptimeCheckInput} from '../../lib/shared/graphql-types';
+import {Inject, Injectable} from '@nestjs/common';
+import {Uptime, UptimeCheckInput} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
-import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
-import {readableId} from '../../lib/readable-id';
-import {UserService} from '../user/user.service';
-import {UserEntity} from '../user/model/user.entity';
-import {PlanValidator} from '../user/plan.validator';
 import normalizeUrl = require('normalize-url');
 
 
@@ -14,7 +9,6 @@ import normalizeUrl = require('normalize-url');
 export class UptimeService {
 
   constructor(
-    @Inject(forwardRef(() => UserService)) private userService: UserService,
     @Inject('DashboardRepo') private dashboardRepo: DatastoreClient<DashboardEntity>,
     @Inject('UptimeRepo') private uptimeRepo: DatastoreClient<Uptime>
   ) {

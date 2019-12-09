@@ -1,25 +1,34 @@
-import {forwardRef, Inject, Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {UserEntity} from './model/user.entity';
 import {UserInput} from './model/user.input';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {AuthUtil} from './auth.util';
-import {DashboardService} from '../dashboard/dashboard.service';
-import {Plans} from './model/plans';
+import {Plans} from '../plan/plans';
 import {TeamService} from '../team/team.service';
+import {TeamEntity} from '../team/model/team.entity';
+import {DashboardService} from '../dashboard/dashboard.service';
 
 @Injectable()
 export class UserService {
 
   constructor(
     private teamService: TeamService,
+    private dashboardService: DashboardService,
     @Inject('UserRepo') private userRepo: DatastoreClient<UserEntity>,
-    @Inject(forwardRef(() => DashboardService)) private dashboardService: DashboardService
   ) {
+  }
+
+  static isAdmin(email: string): boolean {
+    return email === 'martijn.brug@gmail.com';
   }
 
   async create(input: UserInput): Promise<UserEntity> {
     if (!input.email) {
       throw Error(`Cannot signup user without email. Given: ${JSON.stringify(input)}`);
+    }
+    if (!input.teamId) {
+      const {id} = await this.teamService.create(input.email, Plans.getDefaultPlan(input.email));
+      input.teamId = id;
     }
     const user: UserEntity = {
       id: input.email,
@@ -31,10 +40,10 @@ export class UserService {
       picture: input.picture,
       lastLogin: new Date(),
       provider: input.provider,
-      dashboardIds: [],
+      teamId: input.teamId
     };
     await this.userRepo.save(user);
-    return user;
+    return this.get(input.email);
   }
 
   async get(email: string): Promise<UserEntity> {
@@ -49,12 +58,8 @@ export class UserService {
   }
 
   async login(input: UserInput): Promise<string> {
-
-    const [user, team] = await Promise.all([
-      this.get(input.email),
-      this.teamService.getTeamOfMember(input.email)
-    ]);
-    await this.userRepo.save({ // Update data when login
+    const user = await this.get(input.email);
+    await this.userRepo.update(input.email, { // Update data when login
       ...user,
       firstname: input.firstname,
       familyname: input.familyname,
@@ -64,7 +69,7 @@ export class UserService {
       provider: input.provider,
       lastLogin: new Date()
     });
-    return AuthUtil.generateJWT(input.email, team ? team.id : undefined);
+    return AuthUtil.generateJWT(input.email, user.teamId);
   }
 
   /**
@@ -78,53 +83,31 @@ export class UserService {
       return this.login(user);
     }
     await this.create(user);
-    return AuthUtil.generateJWT(user.email, undefined);
+    return AuthUtil.generateJWT(user.email, user.teamId);
   }
 
-  async addDashboard(email: string, dashboardId: string): Promise<boolean> {
-    let user: UserEntity;
-    try {
-      user = await this.get(email);
-    } catch (e) {
-      user = await this.create({ // Create empty user on invite, will be updated on login
-        email
-      });
-    }
-    if (!user.dashboardIds || !Array.isArray(user.dashboardIds)) {
-      user.dashboardIds = [];
-    }
-    if (user.dashboardIds.indexOf(dashboardId) > -1) {
-      return false;
-    }
-    user.dashboardIds.push(dashboardId);
-    await this.userRepo.save(user);
-    return true;
-  }
-
-  async removeDashboard(email: string, dashboardId: string): Promise<boolean> {
-    let user: UserEntity;
-    try {
-      user = await this.get(email);
-    } catch (e) {
-      return false;
-    }
-    if (!user.dashboardIds || !Array.isArray(user.dashboardIds || user.dashboardIds.indexOf(dashboardId) === -1)) {
-      return false;
-    }
-    user.dashboardIds = user.dashboardIds.filter(id => id !== dashboardId);
-    await this.userRepo.save(user);
-    return true;
-  }
-
-  async upgradeToPROPlan(email: string): Promise<UserEntity> {
+  async addToTeam(email: string, newTeamId: string): Promise<TeamEntity> {
     const user = await this.get(email);
-    const newUser = {
-      ...user,
-      updatedAt: new Date(),
-      plan: Plans.getPROPlan(email)
-    };
-    await this.userRepo.save(newUser);
-    return newUser;
+    const oldTeam = user.teamId;
+    if (oldTeam === newTeamId) {
+      return this.teamService.get(oldTeam);
+    }
+    const oldDashboards  = await this.dashboardService.getForTeam(oldTeam);
+    await this.teamService.addDashboard(newTeamId, oldDashboards.map(d => d.id));
+    const team = await this.teamService.addMember(newTeamId, email);
+    await this.teamService.remove(oldTeam);
+    user.teamId = newTeamId;
+    await this.userRepo.update(email, user);
+    return team;
+  }
+
+  async removeFromTeam(email: string, teamId: string): Promise<TeamEntity> {
+    const user = await this.get(email);
+    const team = await this.teamService.removeMember(teamId, email);
+    const {id} = await this.teamService.create(email, Plans.getDefaultPlan(email));
+    user.teamId = id;
+    await this.userRepo.update(email, team);
+    return team;
   }
 
 }

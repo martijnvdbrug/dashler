@@ -12,7 +12,7 @@ type Dashboard implements GraphqlNode {
   updatedAt: Date
   name: String
   description: String
-  blocks: [Block]
+  blocks: [Block!]!
 }
 
 type Block implements GraphqlNode {
@@ -22,7 +22,7 @@ type Block implements GraphqlNode {
   name: String
   url: String
   uptime: Uptime
-  buttons: [Button!]
+  buttons: [Button!]!
 }
 
 type Uptime implements GraphqlNode {
@@ -68,7 +68,6 @@ type User implements GraphqlNode {
   firstname: String
   familyname: String
   picture: String
-  team: Team
 }
 
 type Team implements GraphqlNode {
@@ -77,6 +76,7 @@ type Team implements GraphqlNode {
   updatedAt: Date
   members: [User]
   plan: Plan
+  dashboards: [Dashboard!]!
 }
 
 type Plan implements GraphqlNode {

@@ -45,7 +45,7 @@ export interface Block extends GraphqlNode {
     name?: string;
     url?: string;
     uptime?: Uptime;
-    buttons?: Button[];
+    buttons: Button[];
 }
 
 export interface Button extends GraphqlNode {
@@ -62,7 +62,7 @@ export interface Dashboard extends GraphqlNode {
     updatedAt?: Date;
     name?: string;
     description?: string;
-    blocks?: Block[];
+    blocks: Block[];
 }
 
 export interface HourRange {
@@ -89,6 +89,7 @@ export interface Plan extends GraphqlNode {
 
 export interface IQuery {
     Dashboard(id?: string): Dashboard | Promise<Dashboard>;
+    MyDashboards(id?: string): Dashboard[] | Promise<Dashboard[]>;
     Me(): User | Promise<User>;
     StripeSessionId(): string | Promise<string>;
 }
@@ -99,6 +100,7 @@ export interface Team extends GraphqlNode {
     updatedAt?: Date;
     members?: User[];
     plan?: Plan;
+    dashboards: Dashboard[];
 }
 
 export interface Uptime extends GraphqlNode {
@@ -131,5 +133,4 @@ export interface User extends GraphqlNode {
     firstname?: string;
     familyname?: string;
     picture?: string;
-    team?: Team;
 }

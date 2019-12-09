@@ -1,16 +1,16 @@
-import {forwardRef, Module} from '@nestjs/common';
+import {Module} from '@nestjs/common';
 import {AuthController} from './auth.controller';
 import {GoogleStrategy} from './google.strategy';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {UserEntity} from './model/user.entity';
 import {UserService} from './user.service';
-import {DashboardModule} from '../dashboard/dashboard.module';
 import {TeamModule} from '../team/team.module';
+import {DashboardModule} from '../dashboard/dashboard.module';
 
 @Module({
   imports: [
     TeamModule,
-    forwardRef(() => DashboardModule)
+    DashboardModule
   ],
   controllers: [AuthController],
   providers: [

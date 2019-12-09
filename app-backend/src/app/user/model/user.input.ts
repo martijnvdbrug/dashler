@@ -6,4 +6,5 @@ export interface UserInput {
   locale?: string;
   originId?: string;
   provider?: string;
+  teamId?: string;
 }

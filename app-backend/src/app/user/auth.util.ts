@@ -4,7 +4,7 @@ import {CONFIG} from '../../lib/config/config';
 
 export class AuthUtil {
 
-  static generateJWT(email: string, teamId?: string): string {
+  static generateJWT(email: string, teamId: string): string {
     const payload: JwtPayload = {
       email,
       team: teamId,

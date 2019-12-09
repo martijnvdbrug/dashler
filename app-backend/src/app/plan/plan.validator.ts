@@ -15,8 +15,8 @@ export class PlanValidator {
     }
   }
 
-  static validateDashboards(dashboards: Dashboard[] | string[], plan: Plan): void {
-    if (dashboards.length >= plan.maxDashboards) {
+  static validateDashboards(dashboardIds: string[] | string[], plan: Plan): void {
+    if (dashboardIds.length >= plan.maxDashboards) {
       throw new NotInPlanException(`You are only allowed to have ${plan.maxDashboards} dashboards.`);
     }
   }
@@ -24,8 +24,6 @@ export class PlanValidator {
   static validateUptime(uptime: UptimeCheckInput, plan: Plan): void {
     if (uptime.interval < plan.maxUptimeInterval) {
       throw new NotInPlanException(`The max uptime interval is ${plan.maxUptimeInterval} minutes.`);
-    } else if (uptime.webhook && !plan.webhookNotifications) {
-      throw new NotInPlanException(`You are not allowed to have webhook notifications.`);
     }
   }
 

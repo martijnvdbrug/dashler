@@ -4,6 +4,7 @@ import {Request, Response} from 'express';
 import {StripeCheckoutSession} from './model/stripe-checkout-session';
 import {UserService} from '../user/user.service';
 import Stripe = require('stripe');
+import {TeamService} from '../team/team.service';
 
 @Injectable()
 export class PaymentService {
@@ -11,7 +12,7 @@ export class PaymentService {
   private readonly stripe: Stripe;
 
   constructor(
-    private userService: UserService
+    private teamService: TeamService
   ) {
     this.stripe = new Stripe(CONFIG.stripeSecret);
   }
@@ -41,7 +42,7 @@ export class PaymentService {
     if (!session.display_items[0].plan.livemode) {
       console.log(`Accepted TEST payment for ${session.customer_email}`);
     }
-    await this.userService.upgradeToPROPlan(session.customer_email);
+    await this.teamService.upgradeToPROPlan(session.customer_email);
     console.log(`Upgraded to PRO: ${session.customer_email}`);
     res.json({received: true});
   }

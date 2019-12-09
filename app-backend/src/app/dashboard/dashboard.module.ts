@@ -3,12 +3,12 @@ import {DashboardService} from './dashboard.service';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {Dashboard, Uptime} from '../../lib/shared/graphql-types';
 import {DashboardEntity} from './model/dashboard.entity';
-import {UserModule} from '../user/user.module';
 import {UptimeService} from './uptime.service';
+import {TeamModule} from '../team/team.module';
 
 @Module({
   imports: [
-    UserModule
+    TeamModule
   ],
   providers: [
     DashboardService,

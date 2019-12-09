@@ -3,8 +3,10 @@ directive @authenticated on FIELD_DEFINITION
 type Query {
   # Get dashboard by ID. Gets first Dashboard if no ID given.
   Dashboard(id: ID): Dashboard! @authenticated
-  # Get the currently logged in User.
-  Me: User @authenticated
+  # Get your own Team. Id argument is only available for Admins.
+  Team(id: ID): Team @authenticated
+  # Get your User Object. Id argument is only available for Admins
+  User(id: ID): User @authenticated
   # Get Stripe SessionID.
   StripeSessionId: String! @authenticated
 }
@@ -14,6 +16,8 @@ type Mutation {
   removeDashboard(id: ID!): Boolean @authenticated
   addBlock(dashboardId: ID!, input: BlockInput!): Dashboard @authenticated
   removeBlock(dashboardId: ID!, blockId: ID!): Dashboard @authenticated
+  # Adds a member to your team. TeamId argument is only available for Admins.
+  addMember(userId: ID!, teamId: ID): Team @authenticated
 }
 
 input DashboardInput {

@@ -15,6 +15,7 @@ import {environment} from '../environments/environment';
 import {ApolloBoostModule, APOLLO_BOOST_CONFIG, ApolloBoost} from 'apollo-angular-boost';
 import {LoaderComponent} from './components/loader/loader.component';
 import {PaymentPage} from './pages/payment/payment.page';
+import {TeamService} from './providers/team.service';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {PaymentPage} from './pages/payment/payment.page';
     AuthGuard,
     DashboardService,
     UserService,
+    TeamService
   ],
   bootstrap: [AppComponent]
 })

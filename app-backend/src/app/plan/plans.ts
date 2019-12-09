@@ -1,5 +1,5 @@
-import {Plan} from '../../../../../shared/graphql-types';
-import {readableId} from '../../../lib/readable-id';
+import {Plan} from '../../lib/shared/graphql-types';
+import {readableId} from '../../lib/readable-id';
 
 export class Plans {
 

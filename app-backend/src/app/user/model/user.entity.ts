@@ -4,5 +4,5 @@ export interface UserEntity extends User {
   provider: string;
   locale: string;
   originId: string;
-  dashboardIds: string[];
+  teamId: string;
 }

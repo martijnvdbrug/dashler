@@ -12,25 +12,11 @@ export const userFields = gql`
         picture
     }`;
 
-export const getMeQuery = gql`
+export const getUserQuery = gql`
     ${userFields}
-    query Me {
-        Me {
+    query User {
+        User {
             ...userFields
-        }
-    }`;
-
-export const getMeWithDashboardQuery = gql`
-    ${userFields}
-    query Me {
-        Me {
-            ...userFields
-            dashboards {
-                id
-                name
-                createdAt
-                updatedAt
-            }
         }
     }`;
 

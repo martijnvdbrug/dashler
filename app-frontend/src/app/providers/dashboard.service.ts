@@ -50,5 +50,4 @@ export class DashboardService {
     return result.data.removeBlock;
   }
 
-
 }

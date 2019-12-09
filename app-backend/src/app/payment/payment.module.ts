@@ -1,13 +1,11 @@
-import { Module } from '@nestjs/common';
-import { PaymentService } from './payment.service';
-import {DatastoreClient} from '../../lib/datastore/datastore.client';
-import {UserEntity} from '../user/model/user.entity';
-import { PaymentController } from './payment.controller';
-import {UserModule} from '../user/user.module';
+import {Module} from '@nestjs/common';
+import {PaymentService} from './payment.service';
+import {PaymentController} from './payment.controller';
+import {TeamModule} from '../team/team.module';
 
 @Module({
   imports: [
-    UserModule
+    TeamModule
   ],
   providers: [
     PaymentService
@@ -15,4 +13,5 @@ import {UserModule} from '../user/user.module';
   exports: [PaymentService],
   controllers: [PaymentController]
 })
-export class PaymentModule {}
+export class PaymentModule {
+}
