@@ -61,8 +61,10 @@ export class DashboardPage implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.dashboard$ = this.dashboardService.get(params.get('id'));
       this.dashboard$.subscribe(d => {
-        this.dashboardId = d.id;
-        this.location.go(`/dashboard/${d.id}`);
+        if (d) {
+          this.dashboardId = d.id;
+          this.location.go(`/dashboard/${d.id}`);
+        }
         this.loading = false;
       });
     });
@@ -71,6 +73,7 @@ export class DashboardPage implements OnInit {
     this.allDashboards$ = this.team$.pipe(map(team => team.dashboards));
     this.plan$ = this.team$.pipe(map(team => team.plan));
     this.plan$.subscribe(plan => this.isPro = plan.maxMembers > 1);
+    this.user$.subscribe(u => console.log('USER', u));
   }
 
   async addBlock(): Promise<void> {

@@ -149,7 +149,7 @@
 
   <div class="container-fluid mt--7">
 
-    <button class="btn btn-icon btn-3 btn-secondary" type="button" data-toggle="modal" data-target="#addBlockModal">
+    <button *ngIf="dashboardId" class="btn btn-icon btn-3 btn-secondary" type="button" data-toggle="modal" data-target="#addBlockModal">
       <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
 
       <span class="btn-inner--text">Add block</span>
@@ -165,6 +165,9 @@
 
     <div *ngIf="loading" class="row" style="padding: 10% 40%;">
       <app-loader></app-loader>
+    </div>
+    <div *ngIf="!loading && !dashboardId" class="row" style="padding: 10% 40%;">
+      No dashboards yet.
     </div>
 
     <!-- Add Block Modal -->

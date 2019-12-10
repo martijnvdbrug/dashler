@@ -2,7 +2,7 @@ directive @authenticated on FIELD_DEFINITION
 
 type Query {
   # Get dashboard by ID. Gets first Dashboard if no ID given.
-  Dashboard(id: ID): Dashboard! @authenticated
+  Dashboard(id: ID): Dashboard @authenticated
   # Get your own Team. Id argument is only available for Admins.
   Team(id: ID): Team @authenticated
   # Get your User Object. Id argument is only available for Admins
@@ -18,6 +18,8 @@ type Mutation {
   removeBlock(dashboardId: ID!, blockId: ID!): Dashboard @authenticated
   # Adds a member to your team. TeamId argument is only available for Admins.
   addMember(userId: ID!, teamId: ID): Team @authenticated
+  # Removes a member from your team. TeamId argument is only available for Admins.
+  removeMember(userId: ID!, teamId: ID): Team @authenticated
 }
 
 input DashboardInput {

@@ -1,6 +1,5 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from '../src/app/app.module';
-import {TeamService} from '../src/app/team/team.service';
 import {DatastoreClient} from '../src/lib/datastore/datastore.client';
 import {UserEntity} from '../src/app/user/model/user.entity';
 import {UserService} from '../src/app/user/user.service';
@@ -18,7 +17,7 @@ import {UserService} from '../src/app/user/user.service';
       continue;
     }
 
-    const team = await userService.addToTeam(user.email, '30rzestFY-team-martijn@mistergreen.nl');
+    const team = await userService.addToTeam(user.email, '_nZ4cQ0D9-team-yannick@mistergreen.nl');
 
     console.log(`Added ${user.email} to team ${team.id}`);
   }

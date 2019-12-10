@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {JwtPayload} from '../../lib/shared/jwt.payload';
 import {User} from '../../lib/shared/graphql-types';
 import {catchError, map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {getStripeSessionIdQuery, getUserQuery} from './user.queries';
 import {Apollo} from 'apollo-angular-boost';
 import {Router} from '@angular/router';
@@ -25,7 +25,7 @@ export class UserService {
     }).valueChanges
       .pipe(
         catchError((e) => this.errorAndLogout(e)),
-        map(result => result.data.Me));
+        map(result => result.data.User));
   }
 
   async getStripeSessionId(): Promise<string> {
@@ -37,7 +37,7 @@ export class UserService {
 
   errorAndLogout(e): Observable<any> {
     this.logout();
-    return Observable.throw(`Error getting User with dashboards`, e);
+    return throwError(`Error getting User with dashboards`, e);
   }
 
   logout() {

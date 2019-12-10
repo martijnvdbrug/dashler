@@ -75,6 +75,7 @@ export interface IMutation {
     removeDashboard(id: string): boolean | Promise<boolean>;
     addBlock(dashboardId: string, input: BlockInput): Dashboard | Promise<Dashboard>;
     removeBlock(dashboardId: string, blockId: string): Dashboard | Promise<Dashboard>;
+    addMember(userId: string, teamId?: string): Team | Promise<Team>;
 }
 
 export interface Plan extends GraphqlNode {
@@ -89,8 +90,8 @@ export interface Plan extends GraphqlNode {
 
 export interface IQuery {
     Dashboard(id?: string): Dashboard | Promise<Dashboard>;
-    MyDashboards(id?: string): Dashboard[] | Promise<Dashboard[]>;
-    Me(): User | Promise<User>;
+    Team(id?: string): Team | Promise<Team>;
+    User(id?: string): User | Promise<User>;
     StripeSessionId(): string | Promise<string>;
 }
 

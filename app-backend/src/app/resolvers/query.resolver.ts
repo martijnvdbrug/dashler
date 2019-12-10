@@ -39,7 +39,7 @@ export class QueryResolver {
     if (id && !ctx.isAdmin) {
       throw new ForbiddenException(`Argument 'id' can only be used by Admins`);
     }
-    return this.teamService.get(id ? id : ctx.email);
+    return this.teamService.get(id ? id : ctx.team);
   }
 
   @Query('StripeSessionId')
