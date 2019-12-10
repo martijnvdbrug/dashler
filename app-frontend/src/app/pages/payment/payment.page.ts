@@ -39,7 +39,6 @@ export class PaymentPage implements OnInit {
       this.userService.getStripeSessionId(),
       this.loadScript('https://js.stripe.com/v3/')
     ]);
-    console.log('resolvee');
     const stripe = (window as any).Stripe(environment.stripePK);
     stripe.redirectToCheckout({
       // Make the id field from the Checkout Session creation API response

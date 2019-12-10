@@ -74,7 +74,7 @@ type Team implements GraphqlNode {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  members: [User]
+  members: [User!]!
   plan: Plan
   dashboards: [Dashboard!]!
 }

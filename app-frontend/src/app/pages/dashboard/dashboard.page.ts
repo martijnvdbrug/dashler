@@ -73,7 +73,6 @@ export class DashboardPage implements OnInit {
     this.allDashboards$ = this.team$.pipe(map(team => team.dashboards));
     this.plan$ = this.team$.pipe(map(team => team.plan));
     this.plan$.subscribe(plan => this.isPro = plan.maxMembers > 1);
-    this.user$.subscribe(u => console.log('USER', u));
   }
 
   async addBlock(): Promise<void> {

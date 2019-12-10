@@ -110,4 +110,12 @@ export class UserService {
     return team;
   }
 
+  async getForTeam(team): Promise<UserEntity[]> {
+    return this.userRepo.query({
+      property: 'teamId',
+      operator: '=',
+      value: team
+    });
+  }
+
 }

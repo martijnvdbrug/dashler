@@ -16,5 +16,10 @@ export const getTeamWithDashboardsAndPlan = gql`
                 maxMembers
                 maxUptimeInterval
             }
+            members {
+                id
+                email
+                picture
+            }
         }
     }`;
