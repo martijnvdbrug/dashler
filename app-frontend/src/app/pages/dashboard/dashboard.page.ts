@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {DashboardService} from '../../providers/dashboard.service';
 import {combineLatest, Observable} from 'rxjs';
-import {ButtonInput, Dashboard, HourRange, Plan, Team, UptimeCheckInput, User} from '../../../lib/shared/graphql-types';
+import {Dashboard, Plan, Team, User} from '../../../lib/shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../providers/user.service';
@@ -10,6 +10,7 @@ import {ApolloError} from 'apollo-angular-boost';
 import {environment} from '../../../environments/environment';
 import {TeamService} from '../../providers/team.service';
 import {map} from 'rxjs/operators';
+import {AddBlockFormgroup} from '../../components/add-block/add-block.formgroup';
 
 @Component({
   selector: 'dashboard-page',
@@ -29,24 +30,12 @@ export class DashboardPage implements OnInit {
   teamMembers: User[];
   dashboardId: string;
   subscriptionMessage: string;
-  addBlockForm = new FormGroup({
-    name: new FormControl(),
-    uptimeCheck: new FormControl(),
-    uptimeUrl: new FormControl(),
-    uptimeDisabledHours: new FormControl(),
-    disableFrom: new FormControl(),
-    disableTo: new FormControl(),
-    uptimeInterval: new FormControl(),
-    uptimeWebhook: new FormControl(),
-    button1Label: new FormControl(),
-    button1Url: new FormControl(),
-    button2Label: new FormControl(),
-    button2Url: new FormControl(),
-    button3Label: new FormControl(),
-    button3Url: new FormControl(),
-  });
+  addBlockForm = new AddBlockFormgroup();
   addDashboardForm = new FormGroup({
     name: new FormControl()
+  });
+  addMemberForm = new FormGroup({
+    email: new FormControl()
   });
 
   constructor(
@@ -80,38 +69,8 @@ export class DashboardPage implements OnInit {
   }
 
   async addBlock(): Promise<void> {
-    const buttons: ButtonInput[] = [];
-    if (this.addBlockForm.value.button1Label) {
-      buttons.push({
-        label: this.addBlockForm.value.button1Label,
-        url: this.addBlockForm.value.button1Url
-      });
-    }
-    if (this.addBlockForm.value.button2Label) {
-      buttons.push({
-        label: this.addBlockForm.value.button2Label,
-        url: this.addBlockForm.value.button2Url
-      });
-    }
-    if (this.addBlockForm.value.button3Label) {
-      buttons.push({
-        label: this.addBlockForm.value.button3Label,
-        url: this.addBlockForm.value.button3Url
-      });
-    }
     try {
-      const disabledHours: HourRange = this.createDisabledHours();
-      const uptimecheck: UptimeCheckInput = this.addBlockForm.value.uptimeCheck ? {
-        disabledHours,
-        interval: this.addBlockForm.value.uptimeInterval ? this.addBlockForm.value.uptimeInterval : 60,
-        url: this.addBlockForm.value.uptimeUrl,
-        webhook: this.addBlockForm.value.uptimeWebhook,
-      } : undefined;
-      await this.dashboardService.addBlock(this.dashboardId, {
-        name: this.addBlockForm.value.name,
-        uptimecheck,
-        buttons
-      });
+      await this.dashboardService.addBlock(this.dashboardId, this.addBlockForm.getBlockInput());
       this.addBlockForm.reset();
     } catch (e) {
       if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'NotInPlanException') {
@@ -141,23 +100,6 @@ export class DashboardPage implements OnInit {
 
   logout() {
     this.userService.logout();
-  }
-
-  /**
-   * Create timezone dependant date from hours
-   */
-  createDisabledHours(): HourRange {
-    if (!this.addBlockForm.value.uptimeDisabledHours) {
-      return undefined;
-    }
-    const from = new Date();
-    from.setHours(this.addBlockForm.value.disableFrom);
-    const to = new Date();
-    to.setHours(this.addBlockForm.value.disableTo);
-    return {
-      from,
-      to,
-    };
   }
 
   async createDashboard() {

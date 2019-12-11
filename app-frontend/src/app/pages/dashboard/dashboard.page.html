@@ -98,8 +98,10 @@
         <span *ngFor="let member of teamMembers" class="avatar avatar-sm rounded-circle" style="margin-left: -15px;">
           <img alt="{{ member.email }}" src="{{ member.picture}}" data-toggle="tooltip" data-placement="bottom" title="{{ member.email }}">
         </span>
-        <a href="#" class="avatar avatar-sm rounded-circle" style="background-color: transparent;">
-          <i class="fa fa-plus"></i>
+        <a href="#addMemberModal" class="avatar avatar-sm rounded-circle"
+           data-toggle="modal" data-target="#addMemberModal"
+           style="background-color: transparent;">
+          <i class="fa fa-ellipsis-v"></i>
         </a>
       </div>
       <!-- Search -->
@@ -172,7 +174,7 @@
     <div *ngIf="loading" class="row" style="padding: 10% 40%;">
       <app-loader></app-loader>
     </div>
-    <div *ngIf="!loading && !dashboardId" class="row" style="padding: 30% 40%;">
+    <div *ngIf="!loading && !dashboardId" class="row" style="padding: 10% 40%;">
       Add a dashboard to get started...
     </div>
 
@@ -279,12 +281,13 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="dashboardTitle">Add new dashboard to team</h5>
+            <h5 class="modal-title" id="dashboardTitle">Add new dashboard</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
+            <p *ngIf="plan$ | async; let plan" > You can have {{plan.maxDashboards}} dashboards according to your plan.</p>
             <form [formGroup]="addDashboardForm">
               <div class="row">
                 <div class="col-md-12">
@@ -297,6 +300,35 @@
           </div>
           <div class="modal-footer">
             <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="createDashboard()">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add team member modal-->
+    <div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" >Manage teammembers</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p *ngIf="plan$ | async; let plan" > You can have {{plan.maxMembers}} people in your team according to your plan.</p>
+            <form [formGroup]="addMemberForm">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="newMemberEmail" placeholder="your.team.mate@gmail.com" formControlName="email">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="console.log(addBlockForm.getBlockInput())">Add</button>
           </div>
         </div>
       </div>
