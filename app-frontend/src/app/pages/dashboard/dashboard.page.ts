@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {DashboardService} from '../../providers/dashboard.service';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {ButtonInput, Dashboard, HourRange, Plan, Team, UptimeCheckInput, User} from '../../../lib/shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
@@ -26,6 +26,7 @@ export class DashboardPage implements OnInit {
   user$: Observable<User>;
   team$: Observable<Team>;
   plan$: Observable<Plan>;
+  teamMembers: User[];
   dashboardId: string;
   subscriptionMessage: string;
   addBlockForm = new FormGroup({
@@ -73,6 +74,9 @@ export class DashboardPage implements OnInit {
     this.allDashboards$ = this.team$.pipe(map(team => team.dashboards));
     this.plan$ = this.team$.pipe(map(team => team.plan));
     this.plan$.subscribe(plan => this.isPro = plan.maxMembers > 1);
+    combineLatest(this.user$, this.team$).subscribe(([user, team]) => { // filter currentuser from teammembers
+      this.teamMembers = team.members.filter(m => m.email !== user.email);
+    });
   }
 
   async addBlock(): Promise<void> {
