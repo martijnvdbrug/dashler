@@ -15,6 +15,7 @@ type Mutation {
   createDashboard(input: DashboardInput!): Dashboard @authenticated
   removeDashboard(id: ID!): Boolean @authenticated
   addBlock(dashboardId: ID!, input: BlockInput!): Dashboard @authenticated
+  updateBlock(dashboardId: ID!, blockId: ID!, input: BlockInput!): Dashboard @authenticated
   removeBlock(dashboardId: ID!, blockId: ID!): Dashboard @authenticated
   # Adds a member to your team. TeamId argument is only available for Admins.
   addMember(userId: ID!, teamId: ID): Team @authenticated

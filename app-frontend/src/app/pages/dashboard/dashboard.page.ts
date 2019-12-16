@@ -48,6 +48,7 @@ export class DashboardPage implements OnInit {
   }
 
   ngOnInit(): void {
+    this.addBlockForm.setValues(undefined);
     this.route.paramMap.subscribe((params) => {
       this.dashboard$ = this.dashboardService.get(params.get('id'));
       this.dashboard$.subscribe(d => {

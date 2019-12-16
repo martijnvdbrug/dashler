@@ -3,10 +3,10 @@ import shortid = require('shortid');
 
 export class DashboardAdapter {
 
-  static toBlock(input: BlockInput): Block {
+  static toBlock(input: BlockInput, blockId?: string): Block {
     const now = new Date();
     return {
-      id: shortid.generate(),
+      id: blockId ? blockId : shortid.generate(),
       createdAt: now,
       updatedAt: now,
       name: input.name,

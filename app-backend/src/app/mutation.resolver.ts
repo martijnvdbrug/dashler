@@ -45,6 +45,15 @@ export class MutationResolver {
   }
 
   @Mutation()
+  async updateBlock(
+    @Args('dashboardId') dashboardId: string,
+    @Args('blockId') blockId: string,
+    @Args('input') input: BlockInput,
+    @Context() ctx: Ctx): Promise<Dashboard> {
+    return this.dashboardService.updateBlock(dashboardId, blockId, input, ctx.team);
+  }
+
+  @Mutation()
   async addMember(
     @Args('userId') userId: string,
     @Args('teamId') teamId: string,

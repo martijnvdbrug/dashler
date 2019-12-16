@@ -83,6 +83,32 @@ export class DashboardService {
     return dashboard;
   }
 
+  async updateBlock(dashboardId: string, blockId: string, input: BlockInput, teamId: string): Promise<DashboardEntity> {
+    const [{plan}, dashboard]: [TeamEntity, DashboardEntity] = await Promise.all([
+      this.teamService.get(teamId),
+      this.get(dashboardId, teamId)
+    ]);
+    if (!Array.isArray(dashboard.blocks)) {
+      dashboard.blocks = [];
+    }
+    const existingBlock = dashboard.blocks.find(block => block.id === blockId);
+    if (!existingBlock) {
+      throw Error(`Cannot update block ${blockId}, because it doesn't exists for dashboard ${dashboard}.`);
+    }
+    let createUptimePromise;
+    if (input.uptimecheck) {
+      PlanValidator.validateUptime(input.uptimecheck, plan);
+      createUptimePromise = this.uptimeService.create(input.uptimecheck);
+    }
+    dashboard.blocks = dashboard.blocks.filter(block => block.id !== blockId);
+    dashboard.blocks.push(DashboardAdapter.toBlock(input, blockId));
+    await Promise.all([
+      createUptimePromise,
+      this.dashboardRepo.save(dashboard)
+    ]);
+    return dashboard;
+  }
+
   async removeBlock(dashboardId: string, blockId: string, teamId: string): Promise<DashboardEntity> {
     const dashboard = await this.get(dashboardId, teamId);
     if (!Array.isArray(dashboard.blocks)) {

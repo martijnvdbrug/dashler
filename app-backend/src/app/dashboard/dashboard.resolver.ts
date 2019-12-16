@@ -2,6 +2,7 @@ import {Context, Parent, ResolveProperty, Resolver} from '@nestjs/graphql';
 import {Block, Dashboard, Uptime} from '../../lib/shared/graphql-types';
 import {UptimeService} from './uptime.service';
 import {DashboardService} from './dashboard.service';
+import {DashboardEntity} from './model/dashboard.entity';
 
 @Resolver()
 export class DashboardResolver {
@@ -16,6 +17,12 @@ export class DashboardResolver {
   @Resolver('Team')
   async dashboards(@Context('team') team: string): Promise<Dashboard[]> {
     return this.dashboardService.getForTeam(team);
+  }
+
+  @ResolveProperty('blocks')
+  @Resolver('Dashboard')
+  async blocks(@Parent() dashboard: DashboardEntity): Promise<Block[]> {
+    return dashboard && dashboard.blocks ? dashboard.blocks : [];
   }
 
   @ResolveProperty('uptime')
