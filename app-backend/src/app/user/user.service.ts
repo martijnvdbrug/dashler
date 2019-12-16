@@ -87,27 +87,32 @@ export class UserService {
   }
 
   async addToTeam(email: string, newTeamId: string): Promise<TeamEntity> {
-    const user = await this.get(email);
-    const oldTeam = user.teamId;
-    if (oldTeam === newTeamId) {
-      return this.teamService.get(oldTeam);
+    const user = await this.get(email).catch(() => undefined);
+    if (user) { // Copy existing dashboards and update user.teamId
+      const oldTeam = user.teamId;
+      if (oldTeam === newTeamId) {
+        throw Error(`${email} is already in team ${newTeamId}`);
+      }
+      await this.teamService.remove(oldTeam);
+      const oldDashboards = oldTeam ? await this.dashboardService.getForTeam(oldTeam) : [];
+      await this.teamService.addDashboard(newTeamId, oldDashboards.map(d => d.id));
+      user.teamId = newTeamId;
+      await this.userRepo.update(email, user);
+    } else { // create new User with new teamId
+      await this.create({
+        email,
+        teamId: newTeamId
+      });
     }
-    const oldDashboards  = await this.dashboardService.getForTeam(oldTeam);
-    await this.teamService.addDashboard(newTeamId, oldDashboards.map(d => d.id));
-    const team = await this.teamService.addMember(newTeamId, email);
-    await this.teamService.remove(oldTeam);
-    user.teamId = newTeamId;
-    await this.userRepo.update(email, user);
-    return team;
+    return this.teamService.get(newTeamId);
   }
 
   async removeFromTeam(email: string, teamId: string): Promise<TeamEntity> {
     const user = await this.get(email);
-    const team = await this.teamService.removeMember(teamId, email);
-    const {id} = await this.teamService.create(email, Plans.getDefaultPlan(email));
-    user.teamId = id;
-    await this.userRepo.update(email, team);
-    return team;
+    const {id: newTeamId} = await this.teamService.create(email, Plans.getDefaultPlan(email));
+    user.teamId = newTeamId;
+    await this.userRepo.update(email, user);
+    return this.teamService.get(teamId);
   }
 
   async getForTeam(team): Promise<UserEntity[]> {

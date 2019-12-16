@@ -1,11 +1,11 @@
 import {Args, Context, Query} from '@nestjs/graphql';
-import {Dashboard, Team, User} from '../../lib/shared/graphql-types';
-import {DashboardService} from '../dashboard/dashboard.service';
+import {Dashboard, Team, User} from '../lib/shared/graphql-types';
+import {DashboardService} from './dashboard/dashboard.service';
 import {ForbiddenException, Injectable} from '@nestjs/common';
-import {UserService} from '../user/user.service';
-import {PaymentService} from '../payment/payment.service';
-import {TeamService} from '../team/team.service';
-import {Ctx} from '../user/model/ctx';
+import {UserService} from './user/user.service';
+import {PaymentService} from './payment/payment.service';
+import {TeamService} from './team/team.service';
+import {Ctx} from './user/model/ctx';
 
 @Injectable()
 export class QueryResolver {

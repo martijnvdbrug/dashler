@@ -96,7 +96,8 @@
       <!-- Team -->
       <div *ngIf="teamMembers" class="navbar-nav align-items-center d-none d-md-flex" style="margin-left: 15rem;">
         <span *ngFor="let member of teamMembers" class="avatar avatar-sm rounded-circle" style="margin-left: -15px;">
-          <img alt="{{ member.email }}" src="{{ member.picture}}" data-toggle="tooltip" data-placement="bottom" title="{{ member.email }}">
+          <img alt="{{ member.email }}" src="{{ member.picture ? member.picture : 'https://api.adorable.io/avatars/5001'}}"
+               data-toggle="tooltip" data-placement="bottom" title="{{ member.email }}">
         </span>
         <a href="#addMemberModal" class="avatar avatar-sm rounded-circle"
            data-toggle="modal" data-target="#addMemberModal"
@@ -287,7 +288,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <p *ngIf="plan$ | async; let plan" > You can have {{plan.maxDashboards}} dashboards according to your plan.</p>
+            <p *ngIf="plan$ | async; let plan"> You can have {{plan.maxDashboards}} dashboards according to your plan.</p>
             <form [formGroup]="addDashboardForm">
               <div class="row">
                 <div class="col-md-12">
@@ -310,25 +311,43 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" >Manage teammembers</h5>
+            <h5 class="modal-title">Manage teammembers</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <p *ngIf="plan$ | async; let plan" > You can have {{plan.maxMembers}} people in your team according to your plan.</p>
-            <form [formGroup]="addMemberForm">
-              <div class="row">
+            <p *ngIf="plan$ | async; let plan"> You can have {{plan.maxMembers}} people in your team according to your plan.</p>
+            <div *ngIf="teamMembers">
+              <div *ngFor="let member of teamMembers" class="row" style="margin: 5px 0px;">
+
+                  <span class="avatar avatar-sm rounded-circle" style="margin: 0 20px 0 0;">
+                    <img alt="{{ member.email }}" src="{{ member.picture ? member.picture : 'https://api.adorable.io/avatars/5001'}}">
+                  </span>
+                <p>{{ member.email }}
+                  <a href="" (click)="removeMember(member.email, $event)">
+                    <span aria-hidden="true">&times;</span>
+                  </a>
+                </p>
+              </div>
+            </div>
+            <form [formGroup]="addMemberForm" >
+              <div class="row" style="margin-top: 20px;">
                 <div class="col-md-12">
                   <div class="form-group">
-                    <input type="text" class="form-control" id="newMemberEmail" placeholder="your.team.mate@gmail.com" formControlName="email">
+                    <input type="text" class="form-control" id="newMemberEmail" placeholder="new.team.mate@gmail.com"
+                           (keydown.enter)="addMember()"
+                           formControlName="email">
                   </div>
                 </div>
               </div>
             </form>
           </div>
+<!--          <div class="modal-footer">
+            <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="addMember()">Add</button>
+          </div>-->
           <div class="modal-footer">
-            <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="console.log(addBlockForm.getBlockInput())">Add</button>
+            <button data-dismiss="modal" type="button" class="btn btn-primary">Close</button>
           </div>
         </div>
       </div>

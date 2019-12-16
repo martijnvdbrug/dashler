@@ -5,6 +5,7 @@ import {Dashboard, Uptime} from '../../lib/shared/graphql-types';
 import {DashboardEntity} from './model/dashboard.entity';
 import {UptimeService} from './uptime.service';
 import {TeamModule} from '../team/team.module';
+import {DashboardResolver} from './dashboard.resolver';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import {TeamModule} from '../team/team.module';
   providers: [
     DashboardService,
     UptimeService,
+    DashboardResolver,
     {
       provide: 'DashboardRepo',
       useValue: new DatastoreClient<DashboardEntity>('Dashboard')

@@ -117,4 +117,22 @@ export class DashboardPage implements OnInit {
     }
   }
 
+  async addMember(): Promise<void> {
+    try {
+      await this.teamService.addMember(this.addMemberForm.value.email);
+      this.addMemberForm.reset();
+    } catch (e) {
+      if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'NotInPlanException') {
+        this.showSubcribeModal(e.graphQLErrors[0].message);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async removeMember(email: string, event: Event): Promise<void> {
+    event.preventDefault();
+    await this.teamService.removeMember(email);
+  }
+
 }

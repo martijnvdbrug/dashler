@@ -1,9 +1,9 @@
 import {Args, Context, Mutation} from '@nestjs/graphql';
-import {BlockInput, Dashboard, DashboardInput, Team} from '../../lib/shared/graphql-types';
-import {DashboardService} from '../dashboard/dashboard.service';
+import {BlockInput, Dashboard, DashboardInput, Team} from '../lib/shared/graphql-types';
+import {DashboardService} from './dashboard/dashboard.service';
 import {ForbiddenException, Injectable} from '@nestjs/common';
-import {Ctx} from '../user/model/ctx';
-import {UserService} from '../user/user.service';
+import {Ctx} from './user/model/ctx';
+import {UserService} from './user/user.service';
 
 @Injectable()
 export class MutationResolver {
@@ -55,15 +55,16 @@ export class MutationResolver {
     return this.userService.addToTeam(userId, teamId ? teamId : ctx.team);
   }
 
-  /*  @Mutation()
-    async removeMember(
-      @Args('userId') userId: string,
-      @Args('teamId') teamId: string,
-      @Context() ctx: Ctx): Promise<Team> {
-      if (teamId && !ctx.isAdmin) {
-        throw new ForbiddenException(`Argument 'id' can only be used by Admins`);
-      }
-      return this.teamService.removeMember(userId, teamId ? teamId : ctx.team);
-    }*/
+  @Mutation()
+  async removeMember(
+    @Args('userId') userId: string,
+    @Args('teamId') teamId: string,
+    @Context() ctx: Ctx): Promise<Team> {
+    console.log('asdfa');
+    if (teamId && !ctx.isAdmin) {
+      throw new ForbiddenException(`Argument 'id' can only be used by Admins`);
+    }
+    return this.userService.removeFromTeam(userId, teamId ? teamId : ctx.team);
+  }
 
 }

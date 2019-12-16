@@ -28,29 +28,10 @@ export class TeamService {
     const id = readableId(`team-${email}`);
     await this.teamRepo.save({
       id,
-      memberIds: [email],
       plan,
       dashboardIds: []
     });
     return this.get(id);
-  }
-
-  async addMember(teamId: string, email: string): Promise<TeamEntity> {
-    const team = await this.get(teamId);
-    if (!team.memberIds || !Array.isArray(team.memberIds)) {
-      team.memberIds = [];
-    }
-    team.memberIds.push(email);
-    return this.get(teamId);
-  }
-
-  async removeMember(teamId: string, email: string): Promise<TeamEntity> {
-    const team = await this.get(teamId);
-    if (!team.memberIds || !Array.isArray(team.memberIds)) {
-      team.memberIds = [];
-    }
-    team.memberIds = team.memberIds.filter(id => id !== email);
-    return this.get(teamId);
   }
 
   async addDashboard(teamId: string, dashboardId: string | string[]): Promise<TeamEntity> {

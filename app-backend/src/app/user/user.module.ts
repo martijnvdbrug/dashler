@@ -6,6 +6,7 @@ import {UserEntity} from './model/user.entity';
 import {UserService} from './user.service';
 import {TeamModule} from '../team/team.module';
 import {DashboardModule} from '../dashboard/dashboard.module';
+import {UserResolver} from './user.resolver';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import {DashboardModule} from '../dashboard/dashboard.module';
   providers: [
     UserService,
     GoogleStrategy,
+    UserResolver,
     {
       provide: 'UserRepo',
       useValue: new DatastoreClient<UserEntity>('User')

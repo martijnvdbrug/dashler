@@ -4,12 +4,10 @@ import {DashboardModule} from './dashboard/dashboard.module';
 import {InterfaceResolver} from './interface.resolver';
 import {UserModule} from './user/user.module';
 import {AuthenticatedDirective} from './user/authenticated.directive';
-import {TeamResolver} from './resolvers/team.resolver';
-import {QueryResolver} from './resolvers/query.resolver';
-import {MutationResolver} from './resolvers/mutation.resolver';
-import {BlockResolver} from './resolvers/block.resolver';
-import { PaymentModule } from './payment/payment.module';
-import { TeamModule } from './team/team.module';
+import {QueryResolver} from './query.resolver';
+import {MutationResolver} from './mutation.resolver';
+import {PaymentModule} from './payment/payment.module';
+import {TeamModule} from './team/team.module';
 
 @Module({
   imports: [
@@ -39,8 +37,6 @@ import { TeamModule } from './team/team.module';
     InterfaceResolver,
     QueryResolver,
     MutationResolver,
-    TeamResolver,
-    BlockResolver
   ]
 })
 export class AppModule {

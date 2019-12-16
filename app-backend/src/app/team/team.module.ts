@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { TeamService } from './team.service';
+import {Module} from '@nestjs/common';
+import {TeamService} from './team.service';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {Team} from '../../lib/shared/graphql-types';
 import {TeamEntity} from './model/team.entity';
@@ -16,4 +16,5 @@ import {TeamEntity} from './model/team.entity';
     TeamService
   ]
 })
-export class TeamModule {}
+export class TeamModule {
+}
