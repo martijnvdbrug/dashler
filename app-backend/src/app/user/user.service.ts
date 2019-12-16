@@ -43,6 +43,7 @@ export class UserService {
       teamId: input.teamId
     };
     await this.userRepo.save(user);
+    console.log(`Created new user ${input.email}`);
     return this.get(input.email);
   }
 
@@ -104,6 +105,7 @@ export class UserService {
         teamId: newTeamId
       });
     }
+    console.log(`${email} added to team ${newTeamId}`);
     return this.teamService.get(newTeamId);
   }
 

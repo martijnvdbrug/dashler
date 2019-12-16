@@ -60,7 +60,6 @@ export class MutationResolver {
     @Args('userId') userId: string,
     @Args('teamId') teamId: string,
     @Context() ctx: Ctx): Promise<Team> {
-    console.log('asdfa');
     if (teamId && !ctx.isAdmin) {
       throw new ForbiddenException(`Argument 'id' can only be used by Admins`);
     }
