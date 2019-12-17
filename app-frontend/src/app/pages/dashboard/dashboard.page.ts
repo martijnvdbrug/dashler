@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {DashboardService} from '../../providers/dashboard.service';
 import {combineLatest, Observable} from 'rxjs';
-import {Dashboard, Plan, Team, User} from '../../../lib/shared/graphql-types';
+import {Block, Dashboard, Plan, Team, User} from '../../../lib/shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../providers/user.service';
@@ -48,7 +48,6 @@ export class DashboardPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.addBlockForm.setValues(undefined);
     this.route.paramMap.subscribe((params) => {
       this.dashboard$ = this.dashboardService.get(params.get('id'));
       this.dashboard$.subscribe(d => {
@@ -134,6 +133,11 @@ export class DashboardPage implements OnInit {
   async removeMember(email: string, event: Event): Promise<void> {
     event.preventDefault();
     await this.teamService.removeMember(email);
+  }
+
+  async editBlock(block: Block) {
+    this.addBlockForm.setValues(block);
+    document.getElementById('addBlockButton').click();
   }
 
 }

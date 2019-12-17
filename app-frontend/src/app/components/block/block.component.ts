@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, Output} from '@angular/core';
 import Chart from 'chart.js';
 import {uuid} from '../../../lib/uuid';
 import {Block} from '../../../lib/shared/graphql-types';
@@ -15,6 +15,7 @@ export class BlockComponent implements AfterViewInit {
   block: Block;
   @Input()
   dashboardId: string;
+  @Output() editClicked = new EventEmitter<Block>();
 
   chartId;
   chart: Chart;
@@ -70,6 +71,10 @@ export class BlockComponent implements AfterViewInit {
 
   async removeBlock(): Promise<void> {
     await this.dashboardService.removeBlock(this.dashboardId, this.block.id);
+  }
+
+  async emitEdit(): Promise<void> {
+    this.editClicked.emit(this.block);
   }
 
 }

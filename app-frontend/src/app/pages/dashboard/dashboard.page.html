@@ -155,7 +155,7 @@
 
   <div class="container-fluid mt--7">
 
-    <button *ngIf="dashboardId" class="btn btn-icon btn-3 btn-secondary" type="button" data-toggle="modal" data-target="#addBlockModal">
+    <button *ngIf="dashboardId" id="addBlockButton" class="btn btn-icon btn-3 btn-secondary" type="button" data-toggle="modal" data-target="#addBlockModal">
       <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
 
       <span class="btn-inner--text">Add block</span>
@@ -168,7 +168,11 @@
       <div *ngIf="!dashboard.blocks || dashboard.blocks.length === 0" class="row" style="padding: 10% 40%;">
         Add a new block to your dashboard to get started...
       </div>
-      <app-block *ngFor='let block of dashboard.blocks' [block]="block" [dashboardId]="dashboard.id"></app-block>
+      <app-block *ngFor='let block of dashboard.blocks'
+                 [block]="block"
+                 [dashboardId]="dashboard.id"
+                 (editClicked)="editBlock($event)"
+      ></app-block>
 
     </div>
 
