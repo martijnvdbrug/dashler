@@ -45,7 +45,6 @@ export class AddBlockFormgroup extends FormGroup {
       });
     }
     const disabledHours: HourRange = this.createDisabledHours(this.value.disableFrom, this.value.disableTo);
-    console.log('intervvval',this.value.uptimeInterval);
     const uptimecheck: UptimeCheckInput = this.value.uptimeCheck ? {
       disabledHours,
       interval: this.value.uptimeInterval ? this.value.uptimeInterval : 60,
@@ -67,7 +66,7 @@ export class AddBlockFormgroup extends FormGroup {
     const button3 = block.buttons[2] ? block.buttons[2] : undefined;
     this.patchValue({
       name: block.name,
-      uptimeCheck: !!block.uptime,
+      uptimeCheck: (block.uptime || block.url),
       uptimeUrl: block.url ? block.url : undefined,
       uptimeDisabledHours: !!uptimeDisabledHours,
       disableFrom: uptimeDisabledHours ? this.toCurrentHour(uptimeDisabledHours.from) : undefined,
