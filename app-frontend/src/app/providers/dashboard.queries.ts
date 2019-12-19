@@ -54,6 +54,14 @@ export const addBlockMutation = gql`
         }
     }`;
 
+export const updateBlockMutation = gql`
+    ${dashboardFields}
+    mutation updateBlock($dashboardId: ID!, $blockId: ID!, $input: BlockInput!) {
+        updateBlock(dashboardId: $dashboardId, blockId: $blockId, input: $input) {
+            ...dashboardFields
+        }
+    }`;
+
 export const removeBlockMutation = gql`
     ${dashboardFields}
     mutation removeBlock($dashboardId: ID!, $blockId: ID!) {

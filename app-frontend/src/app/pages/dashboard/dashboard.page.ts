@@ -68,9 +68,13 @@ export class DashboardPage implements OnInit {
     });
   }
 
-  async addBlock(): Promise<void> {
+  async addOrUpdateBlock(): Promise<void> {
     try {
-      await this.dashboardService.addBlock(this.dashboardId, this.addBlockForm.getBlockInput());
+      if (this.addBlockForm.id) {
+        await this.dashboardService.updateBlock(this.dashboardId, this.addBlockForm.id, this.addBlockForm.getBlockInput());
+      } else {
+        await this.dashboardService.addBlock(this.dashboardId, this.addBlockForm.getBlockInput());
+      }
       this.addBlockForm.reset();
     } catch (e) {
       if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'NotInPlanException') {

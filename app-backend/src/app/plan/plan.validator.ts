@@ -3,7 +3,7 @@ import {Block, Dashboard, Plan, UptimeCheckInput} from '../../lib/shared/graphql
 
 export class PlanValidator {
 
-  static validateMembers(users: string[], plan: Plan): void {
+  static validateMembers(users: any[], plan: Plan): void {
     if (users.length >= plan.maxMembers) {
       throw new NotInPlanException(`You are only allowed to have ${plan.maxMembers} team members.`);
     }

@@ -7,6 +7,7 @@ import {Plans} from '../plan/plans';
 import {TeamService} from '../team/team.service';
 import {TeamEntity} from '../team/model/team.entity';
 import {DashboardService} from '../dashboard/dashboard.service';
+import {PlanValidator} from '../plan/plan.validator';
 
 @Injectable()
 export class UserService {
@@ -88,6 +89,11 @@ export class UserService {
   }
 
   async addToTeam(email: string, newTeamId: string): Promise<TeamEntity> {
+    const [team, users] = await Promise.all([
+      this.teamService.get(newTeamId),
+      this.getForTeam(newTeamId)
+    ]);
+    PlanValidator.validateMembers(users, team.plan);
     const user = await this.get(email).catch(() => undefined);
     if (user) { // Copy existing dashboards and update user.teamId
       const oldTeam = user.teamId;

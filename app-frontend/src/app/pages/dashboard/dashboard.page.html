@@ -203,9 +203,10 @@
                   <div class="custom-control custom-checkbox mb-3">
                     <input class="custom-control-input" id="uptimeCheck" formControlName="uptimeCheck" type="checkbox"
                            (change)="toggleUptime($event.target.checked)">
-                    <label class="custom-control-label" for="uptimeCheck">Measure uptime</label>
+                    <label class="custom-control-label" for="uptimeCheck">Check uptime</label>
                   </div>
-                  <div id="add-block-uptime" hidden>
+                  <div id="add-block-uptime"
+                       [hidden]="!addBlockForm.value.uptimeCheck || !addBlockForm.value.uptimeUrl">
                     <div class="form-group">
                       <input type="text" class="form-control" id="blockUrl" placeholder="https://your-url" formControlName="uptimeUrl">
                     </div>
@@ -214,7 +215,7 @@
                              (change)="toggleDisableHours($event.target.checked)">
                       <label class="custom-control-label" for="disableDuring">Disable during certain hours</label>
                     </div>
-                    <div class="form-group" id="disabled-hours" hidden>
+                    <div class="form-group" id="disabled-hours" [hidden]="!addBlockForm.value.uptimeDisabledHours" >
                       <span>Disable from</span> <input type="number" min="0" max="24" class="form-control inline-nr-input" value="18"
                                                        formControlName="disableFrom"> to
                       <input type="number" min="0" max="24" class="form-control inline-nr-input" value="6" formControlName="disableTo">
@@ -249,7 +250,7 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="addBlock()">Save</button>
+            <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="addOrUpdateBlock()">Save</button>
           </div>
         </div>
       </div>

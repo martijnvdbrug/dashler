@@ -19,7 +19,7 @@ type Block implements GraphqlNode {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  name: String
+  name: String!
   url: String
   uptime: Uptime
   buttons: [Button!]!

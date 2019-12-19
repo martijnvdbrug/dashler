@@ -3,6 +3,8 @@ import {Block, BlockInput, ButtonInput, HourRange, UptimeCheckInput} from '../..
 
 export class AddBlockFormgroup extends FormGroup {
 
+  id: string;
+
   constructor() {
     super({
       name: new FormControl(),
@@ -42,7 +44,8 @@ export class AddBlockFormgroup extends FormGroup {
         url: this.value.button3Url
       });
     }
-    const disabledHours: HourRange = this.createDisabledHours();
+    const disabledHours: HourRange = this.createDisabledHours(this.value.disableFrom, this.value.disableTo);
+    console.log('intervvval',this.value.uptimeInterval);
     const uptimecheck: UptimeCheckInput = this.value.uptimeCheck ? {
       disabledHours,
       interval: this.value.uptimeInterval ? this.value.uptimeInterval : 60,
@@ -57,56 +60,45 @@ export class AddBlockFormgroup extends FormGroup {
   }
 
   setValues(block: Block): void {
-
+    this.id = block.id;
+    const uptimeDisabledHours = block.uptime ? block.uptime.disabledHours : undefined;
     const button1 = block.buttons[0] ? block.buttons[0] : undefined;
     const button2 = block.buttons[1] ? block.buttons[1] : undefined;
     const button3 = block.buttons[2] ? block.buttons[2] : undefined;
-
     this.patchValue({
       name: block.name,
       uptimeCheck: !!block.uptime,
-
+      uptimeUrl: block.url ? block.url : undefined,
+      uptimeDisabledHours: !!uptimeDisabledHours,
+      disableFrom: uptimeDisabledHours ? this.toCurrentHour(uptimeDisabledHours.from) : undefined,
+      disableTo: uptimeDisabledHours ? this.toCurrentHour(uptimeDisabledHours.to) : undefined,
+      uptimeInterval: block.uptime ? block.uptime.checkInterval : undefined,
+      uptimeWebhook:  block.uptime ? block.uptime.webhook : undefined,
       button1Label: button1 ? button1.label : undefined,
       button1Url: button1 ? button1.url : undefined,
       button2Label: button2 ? button2.label : undefined,
       button2Url: button2 ? button2.url : undefined,
       button3Label: button3 ? button3.label : undefined,
       button3Url: button3 ? button3.url : undefined,
-
     });
-
-/*    name: new FormControl(),
-      uptimeCheck: new FormControl(),
-      uptimeUrl: new FormControl(),
-      uptimeDisabledHours: new FormControl(),
-      disableFrom: new FormControl(),
-      disableTo: new FormControl(),
-      uptimeInterval: new FormControl(),
-      uptimeWebhook: new FormControl(),
-      button1Label: new FormControl(),
-      button1Url: new FormControl(),
-      button2Label: new FormControl(),
-      button2Url: new FormControl(),
-      button3Label: new FormControl(),
-      button3Url: new FormControl(),*/
-
   }
 
   /**
    * Create timezone dependant date from hours
    */
-  createDisabledHours(): HourRange {
-    if (!this.value.uptimeDisabledHours) {
-      return undefined;
-    }
+  createDisabledHours(disableFrom: number, disableTo: number): HourRange {
     const from = new Date();
-    from.setHours(this.value.disableFrom);
+    from.setHours(disableFrom);
     const to = new Date();
-    to.setHours(this.value.disableTo);
+    to.setHours(disableTo);
     return {
       from,
       to,
     };
+  }
+
+  toCurrentHour(date: Date): number {
+    return date.getHours();
   }
 
 }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BlockInput, Dashboard, DashboardInput} from '../../lib/shared/graphql-types';
-import {addBlockMutation, createDashboardMutation, getDashboardQuery, removeBlockMutation} from './dashboard.queries';
+import {addBlockMutation, createDashboardMutation, getDashboardQuery, removeBlockMutation, updateBlockMutation} from './dashboard.queries';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Apollo} from 'apollo-angular-boost';
@@ -28,6 +28,15 @@ export class DashboardService {
       mutation: addBlockMutation,
       errorPolicy: 'none',
       variables: {dashboardId, input}
+    }).toPromise();
+    return result.data.addBlock;
+  }
+
+  async updateBlock(dashboardId: string, blockId: string, input: BlockInput): Promise<Dashboard> {
+    const result = await this.apollo.mutate<any>({
+      mutation: updateBlockMutation,
+      errorPolicy: 'none',
+      variables: {dashboardId, blockId, input}
     }).toPromise();
     return result.data.addBlock;
   }
