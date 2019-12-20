@@ -32,7 +32,8 @@
     "script": "export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json && export GCLOUD_PROJECT=dasher-253813 && yarn ts-node",
     "deploy": "yarn compile && cd dist",
     "deploy:batcher": "yarn deploy && gcloud functions deploy uptime_batcher --runtime=nodejs10 --trigger-http --region=europe-west1 --timeout=60 --project=dasher-253813",
-    "deploy:poller": "yarn deploy && gcloud functions deploy uptime_poller --runtime nodejs10 --trigger-topic uptime-urls-to-poll --region=europe-west1 --timeout=60 --project=dasher-253813"
+    "deploy:poller": "yarn deploy && gcloud functions deploy uptime_poller --runtime nodejs10 --trigger-topic uptime-urls-to-poll --region=europe-west1 --timeout=60 --project=dasher-253813",
+    "deploy:all": "yarn deploy:batcher && yarn deploy:poller"
   },
   "jest": {
     "roots": [

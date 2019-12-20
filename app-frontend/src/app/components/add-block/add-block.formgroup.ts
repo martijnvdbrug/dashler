@@ -24,6 +24,11 @@ export class AddBlockFormgroup extends FormGroup {
     });
   }
 
+  reset() {
+    this.id = undefined;
+    super.reset();
+  }
+
   getBlockInput(): BlockInput {
     const buttons: ButtonInput[] = [];
     if (this.value.button1Label) {
