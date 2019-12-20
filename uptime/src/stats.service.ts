@@ -4,6 +4,8 @@ import shortid = require('shortid');
 
 export class StatsService {
 
+  static readonly timeoutAfter = 2000;
+
   /**
    * Calculate stats based on current checks
    */
@@ -22,7 +24,7 @@ export class StatsService {
         ms500_1++;
       } else if (check.duration > 500 && check.duration <= 2000) {
         s1_2++;
-      } else if (check.duration > 2000) {
+      } else if (check.duration > this.timeoutAfter) {
         s2++;
       } else {
         error++;

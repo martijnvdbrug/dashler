@@ -28,6 +28,11 @@ export class PollingService {
    */
   static async check(uptime: UptimeEntity): Promise<UptimeEntity> {
     const response = await this.request(uptime.id);
+    if (uptime.webhook && response.statusCode === 500) {
+      await this.notify(uptime.webhook, `${uptime.id} is down`, uptime.id);
+    } else if (uptime.webhook && response.durationInMs > StatsService.timeoutAfter) {
+      await this.notify(uptime.webhook, `${uptime.id} failed to respond within ${StatsService.timeoutAfter}ms`, uptime.id);
+    }
     if (!uptime.checks) {
       uptime.checks = [];
     }
@@ -49,7 +54,7 @@ export class PollingService {
       time: true,
       simple: false,
       resolveWithFullResponse: true,
-      timeout: 3000
+      timeout: 2000
     })
       .then((response) => {
         return {
@@ -61,9 +66,25 @@ export class PollingService {
         console.error(`Error polling: ${url}:`, err.message);
         return {
           statusCode: err.message === 'Error: ESOCKETTIMEDOUT' ? 200 : 500,
-          durationInMs: 3000,
+          durationInMs: StatsService.timeoutAfter + 99,
         };
       });
+  }
+
+  static async notify(webhook: string, message: string, url: string): Promise<void> {
+    try {
+      await rp({
+        method: 'POST',
+        uri: webhook,
+        body: {
+          text: message
+        },
+        json: true // Automatically stringifies the body to JSON
+      });
+    } catch (err) {
+      console.error(`Failed to notify ${url}:`, err);
+    }
+
   }
 
 }
