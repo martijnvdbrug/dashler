@@ -12,11 +12,11 @@ export const dashboardFields = gql`
             createdAt
             updatedAt
             name
-            url
             uptime {
                 id
                 createdAt
                 updatedAt
+                url
                 checkInterval
                 webhook
                 stats {

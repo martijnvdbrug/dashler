@@ -1,5 +1,5 @@
 import {ForbiddenException, Inject, Injectable} from '@nestjs/common';
-import {BlockInput, DashboardInput} from '../../lib/shared/graphql-types';
+import {BlockInput, DashboardInput, Uptime} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardAdapter} from './dashboard.adapter';
 import {DashboardEntity} from './model/dashboard.entity';
@@ -8,6 +8,7 @@ import {PlanValidator} from '../plan/plan.validator';
 import {UptimeService} from './uptime.service';
 import {TeamService} from '../team/team.service';
 import {TeamEntity} from '../team/model/team.entity';
+import {BlockEntity} from './model/block.entity';
 
 
 @Injectable()
@@ -55,7 +56,7 @@ export class DashboardService {
   async remove(id: string, teamId: string): Promise<boolean> {
     const dashboard = await this.get(id, teamId);
     const blocks = dashboard.blocks ? dashboard.blocks : [];
-    await Promise.all(blocks.map(block => this.uptimeService.remove(block.url)));
+    await Promise.all(blocks.map(block => this.uptimeService.remove(block.uptimeId)));
     await this.teamService.removeDashboard(dashboard.teamId, id);
     await this.dashboardRepo.remove(id);
     return true;
@@ -70,16 +71,14 @@ export class DashboardService {
       dashboard.blocks = [];
     }
     PlanValidator.validateBlocks(dashboard.blocks, plan);
-    let createUptimePromise;
+    let uptimeId;
     if (input.uptimecheck) {
       PlanValidator.validateUptime(input.uptimecheck, plan);
-      createUptimePromise = this.uptimeService.create(input.uptimecheck);
+      const {id} = await this.uptimeService.upsert(input.uptimecheck);
+      uptimeId = id;
     }
-    dashboard.blocks.push(DashboardAdapter.toBlock(input));
-    await Promise.all([
-      createUptimePromise,
-      this.dashboardRepo.save(dashboard)
-    ]);
+    dashboard.blocks.push(DashboardAdapter.toBlock(input, uptimeId));
+    await this.dashboardRepo.save(dashboard);
     return dashboard;
   }
 
@@ -95,17 +94,17 @@ export class DashboardService {
     if (!existingBlock) {
       throw Error(`Cannot update block ${blockId}, because it doesn't exists for dashboard ${dashboard}.`);
     }
-    let createUptimePromise;
+    let uptimeId;
     if (input.uptimecheck) {
       PlanValidator.validateUptime(input.uptimecheck, plan);
-      createUptimePromise = this.uptimeService.create(input.uptimecheck);
+      const {id} = await this.uptimeService.upsert(input.uptimecheck, existingBlock.uptimeId);
+      uptimeId = id;
+    } else {
+      await this.uptimeService.remove(existingBlock.uptimeId);
     }
     dashboard.blocks = dashboard.blocks.filter(block => block.id !== blockId);
-    dashboard.blocks.push(DashboardAdapter.toBlock(input, blockId));
-    await Promise.all([
-      createUptimePromise,
-      this.dashboardRepo.save(dashboard)
-    ]);
+    dashboard.blocks.push(DashboardAdapter.toBlock(input, uptimeId, blockId));
+    await this.dashboardRepo.save(dashboard);
     return dashboard;
   }
 
@@ -116,7 +115,7 @@ export class DashboardService {
     }
     const block = dashboard.blocks.find(b => b.id === blockId);
     if (block) {
-      await this.uptimeService.remove(block.url);
+      await this.uptimeService.remove(block.uptimeId);
     }
     dashboard.blocks = dashboard.blocks.filter(b => b.id !== blockId);
     await this.dashboardRepo.save(dashboard);

@@ -1,8 +1,9 @@
 import {Context, Parent, ResolveProperty, Resolver} from '@nestjs/graphql';
-import {Block, Dashboard, Uptime} from '../../lib/shared/graphql-types';
+import {Block, Dashboard, HourRange, Uptime} from '../../lib/shared/graphql-types';
 import {UptimeService} from './uptime.service';
 import {DashboardService} from './dashboard.service';
 import {DashboardEntity} from './model/dashboard.entity';
+import {BlockEntity} from './model/block.entity';
 
 @Resolver()
 export class DashboardResolver {
@@ -27,13 +28,11 @@ export class DashboardResolver {
 
   @ResolveProperty('uptime')
   @Resolver('Block')
-  async uptime(@Parent() block: Block, @Context('email') email: string): Promise<Uptime> {
-    if (!block.url) {
+  async uptime(@Parent() block: BlockEntity, @Context('email') email: string): Promise<Uptime> {
+    if (!block.uptimeId) {
       return undefined;
     }
-    return this.uptimeService.get(block.url);
+    return this.uptimeService.get((block as BlockEntity).uptimeId);
   }
-
-
 
 }

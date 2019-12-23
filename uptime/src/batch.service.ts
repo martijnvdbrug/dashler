@@ -24,11 +24,11 @@ export class BatchService {
       checkForIntervals.map(interval => BatchService.repo.query({property: 'checkInterval', operator: '=', value: interval}))
     );
     const uptimes = uptimesArray.reduce((a, b) => a.concat(b));
-    const urls = uptimes
+    const uptimeIds = uptimes
       .filter(u => !BatchService.disableNow(u.disabledHours, u.id))
       .map(u => u.id);
-    while (urls.length) {
-      const batch = urls.splice(0, 10);
+    while (uptimeIds.length) {
+      const batch = uptimeIds.splice(0, 10);
       if (batch && batch.length > 0) {
         await PubsubUtil.publish(BatchService.topicname, batch);
         console.log(`publishing ${batch.length} urls`);
@@ -39,7 +39,7 @@ export class BatchService {
   /**
    * Check if the uptimeCheck is disabled at this moment
    */
-  static disableNow(disabledHours: HourRange, url: string): boolean {
+  static disableNow(disabledHours: HourRange, uptimeId: string): boolean {
     if (!disabledHours || !disabledHours.from || !disabledHours.to) {
       return false;
     }
@@ -58,7 +58,7 @@ export class BatchService {
       }
       return now >= from && now < to;
     } catch (e) {
-      console.error(`Error getting disabled hours for ${url}`, e);
+      console.error(`Error getting disabled hours for uptime ${uptimeId}`, e);
       return false;
     }
   }

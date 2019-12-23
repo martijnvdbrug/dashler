@@ -70,7 +70,9 @@ export class BlockComponent implements AfterViewInit {
   }
 
   async removeBlock(): Promise<void> {
-    await this.dashboardService.removeBlock(this.dashboardId, this.block.id);
+    if (confirm(`Are you sure you want to delete this block?`)) {
+      await this.dashboardService.removeBlock(this.dashboardId, this.block.id);
+    }
   }
 
   async emitEdit(): Promise<void> {

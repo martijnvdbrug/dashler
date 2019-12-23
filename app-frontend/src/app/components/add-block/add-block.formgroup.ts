@@ -71,8 +71,8 @@ export class AddBlockFormgroup extends FormGroup {
     const button3 = block.buttons[2] ? block.buttons[2] : undefined;
     this.patchValue({
       name: block.name,
-      uptimeCheck: (block.uptime || block.url),
-      uptimeUrl: block.url ? block.url : undefined,
+      uptimeCheck: !!block.uptime,
+      uptimeUrl: block.uptime ? block.uptime.url : undefined,
       uptimeDisabledHours: !!uptimeDisabledHours,
       disableFrom: uptimeDisabledHours ? this.toCurrentHour(uptimeDisabledHours.from) : undefined,
       disableTo: uptimeDisabledHours ? this.toCurrentHour(uptimeDisabledHours.to) : undefined,
@@ -102,7 +102,7 @@ export class AddBlockFormgroup extends FormGroup {
   }
 
   toCurrentHour(date: Date): number {
-    return date.getHours();
+    return (new Date(date)).getHours();
   }
 
 }

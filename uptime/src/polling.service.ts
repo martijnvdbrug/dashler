@@ -12,12 +12,12 @@ export class PollingService {
 
   static datastore = new DatastoreClient<UptimeEntity>('Uptime');
 
-  static async checkMultiple(urls: string[]): Promise<void> {
-    if (!urls || urls.length === 0) {
+  static async checkMultiple(ids: string[]): Promise<void> {
+    if (!ids || ids.length === 0) {
       console.log('No urls in message, skipping');
       return;
     }
-    const uptimes = await this.datastore.getMultiple(urls);
+    const uptimes = await this.datastore.getMultiple(ids);
     const updated = await Promise.all(uptimes.map(u => this.check(u)));
     await this.datastore.saveMultiple(updated);
     console.log(`Polled ${updated.length} urls`);
@@ -27,11 +27,11 @@ export class PollingService {
    * Checks urls, deletes old checks, calculates stats and returns. DOES NOT save in datastore
    */
   static async check(uptime: UptimeEntity): Promise<UptimeEntity> {
-    const response = await this.request(uptime.id);
+    const response = await this.request(uptime.url);
     if (uptime.webhook && response.statusCode === 500) {
-      await this.notify(uptime.webhook, `${uptime.id} is down`, uptime.id);
+      await this.notify(uptime.webhook, `${uptime.url} is down`, uptime.url);
     } else if (uptime.webhook && response.durationInMs > StatsService.timeoutAfter) {
-      await this.notify(uptime.webhook, `${uptime.id} failed to respond within ${StatsService.timeoutAfter}ms`, uptime.id);
+      await this.notify(uptime.webhook, `${uptime.url} failed to respond within ${StatsService.timeoutAfter}ms`, uptime.url);
     }
     if (!uptime.checks) {
       uptime.checks = [];

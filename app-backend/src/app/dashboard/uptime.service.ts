@@ -2,6 +2,7 @@ import {Inject, Injectable} from '@nestjs/common';
 import {Uptime, UptimeCheckInput} from '../../lib/shared/graphql-types';
 import {DatastoreClient} from '../../lib/datastore/datastore.client';
 import {DashboardEntity} from './model/dashboard.entity';
+import {readableId} from '../../lib/readable-id';
 import normalizeUrl = require('normalize-url');
 
 
@@ -14,19 +15,16 @@ export class UptimeService {
   ) {
   }
 
-  async get(url: string): Promise<Uptime> {
-    return this.uptimeRepo.get(url);
+  async get(id: string): Promise<Uptime> {
+    return this.uptimeRepo.get(id);
   }
 
-  async create(input: UptimeCheckInput): Promise<Uptime> {
-    if (await this.uptimeRepo.exists(input.url)) {
-      return this.uptimeRepo.get(input.url);
-    }
-    const id = normalizeUrl(input.url);
+  async upsert(input: UptimeCheckInput, uptimeId?: string): Promise<Uptime> {
+    const url = normalizeUrl(input.url);
+    const id = uptimeId ? uptimeId : readableId(url);
     const uptime: Uptime = {
         id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        url,
         checkInterval: Math.ceil(input.interval / 5) * 5,
         webhook: input.webhook,
         disabledHours: input.disabledHours
@@ -36,11 +34,11 @@ export class UptimeService {
     return this.uptimeRepo.get(id);
   }
 
-  async remove(url: string): Promise<boolean> {
-    if (!url) {
+  async remove(id: string): Promise<boolean> {
+    if (!id) {
       return false;
     }
-    await this.uptimeRepo.remove(normalizeUrl(url));
+    await this.uptimeRepo.remove(id);
     return true;
   }
 

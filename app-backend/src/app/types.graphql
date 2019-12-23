@@ -20,7 +20,6 @@ type Block implements GraphqlNode {
   createdAt: Date
   updatedAt: Date
   name: String!
-  url: String
   uptime: Uptime
   buttons: [Button!]!
 }
@@ -29,6 +28,7 @@ type Uptime implements GraphqlNode {
   id: ID!
   createdAt: Date
   updatedAt: Date
+  url: String!
   checkInterval: Int
   webhook: String
   disabledHours: HourRange
