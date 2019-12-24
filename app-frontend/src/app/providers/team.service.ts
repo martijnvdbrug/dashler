@@ -24,7 +24,6 @@ export class TeamService {
     }).valueChanges
       .pipe(
         map(result => {
-          console.log('result', result.data.Team.dashboards);
           return result.data.Team;
         }));
   }
