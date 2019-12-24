@@ -79,7 +79,12 @@
       <ul class="navbar-nav mb-md-3">
         <li class="nav-item">
           <a class="nav-link" href="https://whatsrunning.io">
-            <i class="ni ni-spaceship"></i> Support
+            <i class="ni ni-controller"></i> Support
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/payment">
+            <i class="ni ni-spaceship"></i> Get PRO
           </a>
         </li>
       </ul>
@@ -102,7 +107,7 @@
         <a href="#addMemberModal" class="avatar avatar-sm rounded-circle"
            data-toggle="modal" data-target="#addMemberModal"
            style="background-color: transparent;">
-          <i class="fa fa-ellipsis-v"></i>
+          <i class="fa fa-users-cog"></i>
         </a>
       </div>
       <!-- Search -->
@@ -157,9 +162,11 @@
 
     <button *ngIf="dashboardId" id="addBlockButton" class="btn btn-icon btn-3 btn-secondary" type="button" data-toggle="modal" data-target="#addBlockModal">
       <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
-
       <span class="btn-inner--text">Add block</span>
-
+    </button>
+    <button *ngIf="dashboardId" class="btn btn-icon btn-3 btn-warning" type="button" (click)="removeDashboard()">
+      <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
+      <span class="btn-inner--text">delete</span>
     </button>
 
     <!-- Card stats -->
@@ -227,7 +234,7 @@
                     <div class="form-group">
                       <input type="text" placeholder="(Slack) Webhook for notifying downtime" class="form-control" formControlName="uptimeWebhook"/>
                     </div>
-                    <a [href]="environment.homepage" [attr.hidden]="isPro?'':null">Upgrade to PRO to get higher frequency uptime checks,
+                    <a [href]="environment.paymentPage" [attr.hidden]="isPro?'':null">Upgrade to PRO to get higher frequency uptime checks,
                       webhooks and alot more!</a>
                   </div>
                 </div>
@@ -275,7 +282,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <a role="button" class="btn btn-white" [href]="environment.homepage">Yes, I am PRO</a>
+            <a role="button" class="btn btn-white" [href]="environment.paymentPage">Yes, give me the PRO plan</a>
             <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -317,7 +324,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Manage teammembers</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" id="closeTeamMembers" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>

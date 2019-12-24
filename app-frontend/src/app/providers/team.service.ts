@@ -20,9 +20,13 @@ export class TeamService {
   getTeam(): Observable<Team> {
     return this.apollo.watchQuery<any>({
       query: getTeamWithDashboardsAndPlan,
+      fetchPolicy: 'no-cache'
     }).valueChanges
       .pipe(
-        map(result => result.data.Team));
+        map(result => {
+          console.log('result', result.data.Team.dashboards);
+          return result.data.Team;
+        }));
   }
 
   async addMember(email: string): Promise<Team> {

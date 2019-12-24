@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   authServer: 'http://localhost:8999',
   homepage: 'https://whatsrunning.io',
-  pricingPage: 'https://whatsrunning.io/#pricing',
+  paymentPage: '/payment',
   stripePK: 'pk_test_8J7vyT6UiqC7ReU9dwih89vt00IIcw6hqN'
 };
 

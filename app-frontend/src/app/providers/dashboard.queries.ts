@@ -70,6 +70,11 @@ export const removeBlockMutation = gql`
         }
     }`;
 
+export const removeDashboardMutation = gql`
+    mutation removeDashboard($id: ID!) {
+        removeDashboard(id: $id)
+    }`;
+
 export const createDashboardMutation = gql`
     ${dashboardFields}
     mutation createDashboard($input: DashboardInput!) {

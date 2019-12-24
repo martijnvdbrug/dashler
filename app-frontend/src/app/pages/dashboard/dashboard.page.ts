@@ -4,7 +4,7 @@ import {DashboardService} from '../../providers/dashboard.service';
 import {combineLatest, Observable} from 'rxjs';
 import {Block, Dashboard, Plan, Team, User} from '../../../lib/shared/graphql-types';
 import {FormControl, FormGroup} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../providers/user.service';
 import {ApolloError} from 'apollo-angular-boost';
 import {environment} from '../../../environments/environment';
@@ -43,7 +43,8 @@ export class DashboardPage implements OnInit {
     private dashboardService: DashboardService,
     private userService: UserService,
     private teamService: TeamService,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {
   }
 
@@ -112,6 +113,7 @@ export class DashboardPage implements OnInit {
         name: this.addDashboardForm.value.name,
       });
       this.addDashboardForm.reset();
+      this.ngOnInit();
     } catch (e) {
       if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'NotInPlanException') {
         this.showSubcribeModal(e.graphQLErrors[0].message);
@@ -125,8 +127,10 @@ export class DashboardPage implements OnInit {
     try {
       await this.teamService.addMember(this.addMemberForm.value.email);
       this.addMemberForm.reset();
+      this.ngOnInit();
     } catch (e) {
       if (e instanceof ApolloError && (e as ApolloError).graphQLErrors[0].extensions.code === 'NotInPlanException') {
+        document.getElementById('closeTeamMembers').click();
         this.showSubcribeModal(e.graphQLErrors[0].message);
       } else {
         throw e;
@@ -137,6 +141,14 @@ export class DashboardPage implements OnInit {
   async removeMember(email: string, event: Event): Promise<void> {
     event.preventDefault();
     await this.teamService.removeMember(email);
+    this.ngOnInit();
+  }
+
+  async removeDashboard(): Promise<void> {
+    if (confirm(`Are you sure you want to remove this dashboard?`)) {
+      await this.dashboardService.removeDashboard(this.dashboardId);
+      this.ngOnInit();
+    }
   }
 
   async editBlock(block: Block) {
