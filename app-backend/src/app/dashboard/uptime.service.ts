@@ -20,8 +20,16 @@ export class UptimeService {
   }
 
   async upsert(input: UptimeCheckInput, uptimeId?: string): Promise<Uptime> {
+    if (uptimeId) {
+      return this.update(input, uptimeId);
+    } else {
+      return this.create(input);
+    }
+  }
+
+  async create(input: UptimeCheckInput): Promise<Uptime> {
     const url = normalizeUrl(input.url);
-    const id = uptimeId ? uptimeId : readableId(url);
+    const id = readableId(url);
     const uptime: Uptime = {
         id,
         url,
@@ -30,6 +38,21 @@ export class UptimeService {
         disabledHours: input.disabledHours
       }
     ;
+    await this.uptimeRepo.save(uptime);
+    return this.uptimeRepo.get(id);
+  }
+
+  async update(input: UptimeCheckInput, id: string): Promise<Uptime> {
+    const existing = await this.get(id);
+    const url = normalizeUrl(input.url);
+    const uptime: Uptime = {
+      ...existing,
+      id,
+      url,
+      checkInterval: Math.ceil(input.interval / 5) * 5,
+      webhook: input.webhook,
+      disabledHours: input.disabledHours
+    };
     await this.uptimeRepo.save(uptime);
     return this.uptimeRepo.get(id);
   }
