@@ -39,10 +39,6 @@ export class BlockComponent implements AfterViewInit {
         stats.error
       ];
     }
-/*    demo data const nr = () => {
-      return Math.round(Math.random() * 100);
-    };
-    data = [0, nr() * 5, nr() * 3, nr(), nr(), nr()];*/
     this.chart = new Chart(ctx, {
       type: 'doughnut',
       data: {
@@ -64,7 +60,12 @@ export class BlockComponent implements AfterViewInit {
         maintainAspectRatio: false,
         legend: {
           display: false
-        }
+        },
+        tooltips: {
+          callbacks: {
+            label: (item, d) => `${d.datasets[item.datasetIndex].data[item.index]}%`
+          }
+        },
       }
     });
   }
