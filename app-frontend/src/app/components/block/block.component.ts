@@ -63,7 +63,7 @@ export class BlockComponent implements AfterViewInit {
         },
         tooltips: {
           callbacks: {
-            label: (item, d) => `${d.datasets[item.datasetIndex].data[item.index]}%`
+            label: (item, d) => `${d.labels[item.index]}: ${d.datasets[item.datasetIndex].data[item.index]}%`
           }
         },
       }
