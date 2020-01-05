@@ -28,9 +28,9 @@ export class PollingService {
    */
   static async check(uptime: UptimeEntity): Promise<UptimeEntity> {
     const response = await this.request(uptime.url);
-    if (uptime.webhook && response.statusCode === 500) {
-      await this.notify(uptime.webhook, `${uptime.url} is down. Go find out whats up at https://app.whatsrunning.io`, uptime.url);
-    } else if (uptime.webhook && response.durationInMs > StatsService.timeoutAfter) {
+    if (response.statusCode >= 400) {
+      await this.notify(uptime.webhook, `${uptime.url} is down. Error: ${response.message}. Go find out whats up at https://app.whatsrunning.io`, uptime.url);
+    } else if (response.durationInMs > StatsService.timeoutAfter) {
       await this.notify(uptime.webhook, `${uptime.url} failed to respond within ${StatsService.timeoutAfter}ms. Go find out whats up at https://app.whatsrunning.io`, uptime.url);
     }
     if (!uptime.checks) {
@@ -72,6 +72,9 @@ export class PollingService {
   }
 
   static async notify(webhook: string, message: string, url: string): Promise<void> {
+    if (!webhook) {
+      return;
+    }
     try {
       await rp({
         method: 'POST',

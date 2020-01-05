@@ -25,7 +25,15 @@ export class BatchService {
     );
     const uptimes = uptimesArray.reduce((a, b) => a.concat(b));
     const uptimeIds = uptimes
-      .filter(u => !BatchService.disableNow(u.disabledHours, u.id))
+      .filter(u => {
+        const disabled = BatchService.disableNow(u.disabledHours, u.id);
+        if (disabled) {
+          console.log(`Not checking ${u.url}, because it is disabled`);
+        } else {
+          console.log(`Going to check ${u.url} now.`);
+        }
+        return !disabled;
+      })
       .map(u => u.id);
     while (uptimeIds.length) {
       const batch = uptimeIds.splice(0, 10);
