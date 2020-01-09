@@ -1,6 +1,5 @@
-import {Uptime} from './lib/shared/graphql-types';
+import {HourRange, Uptime} from './lib/shared/graphql-types';
 import {DatastoreClient} from './lib/datastore/datastore.client';
-import {HourRange} from './lib/shared/graphql-types';
 import {PubsubUtil} from './lib/pubsub.util';
 
 /**
@@ -12,7 +11,7 @@ export class BatchService {
   static repo = new DatastoreClient<Uptime>('Uptime');
 
   static async publishUrls(): Promise<void> {
-    const minuteOfDay = Math.ceil(new Date().getMinutes() / 5 ) * 5;
+    const minuteOfDay = Math.ceil(new Date().getMinutes() / 5) * 5;
     const checkForIntervals: number[] = [];
     for (let m = 5; m <= 60; m += 5) {
       if (minuteOfDay % m === 0) {
@@ -24,17 +23,7 @@ export class BatchService {
       checkForIntervals.map(interval => BatchService.repo.query({property: 'checkInterval', operator: '=', value: interval}))
     );
     const uptimes = uptimesArray.reduce((a, b) => a.concat(b));
-    const uptimeIds = uptimes
-      .filter(u => {
-        const disabled = BatchService.disableNow(u.disabledHours, u.id);
-        if (disabled) {
-          console.log(`Not checking ${u.url}, because it is disabled`);
-        } else {
-          console.log(`Going to check ${u.url} now.`);
-        }
-        return !disabled;
-      })
-      .map(u => u.id);
+    const uptimeIds = this.filterDisabled(uptimes).map(u => u.id);
     while (uptimeIds.length) {
       const batch = uptimeIds.splice(0, 10);
       if (batch && batch.length > 0) {
@@ -44,10 +33,23 @@ export class BatchService {
     }
   }
 
+  static filterDisabled(uptimes: Uptime[]): Uptime[] {
+    return uptimes
+      .filter(u => {
+        const disabled = BatchService.disabledNow(u.disabledHours, u.id);
+        if (disabled) {
+          console.log(`Not checking ${u.url}, because it is disabled`);
+        } else {
+          console.log(`Going to check ${u.url} now.`);
+        }
+        return !disabled;
+      });
+  }
+
   /**
    * Check if the uptimeCheck is disabled at this moment
    */
-  static disableNow(disabledHours: HourRange, uptimeId: string): boolean {
+  static disabledNow(disabledHours: HourRange, uptimeId: string): boolean {
     if (!disabledHours || !disabledHours.from || !disabledHours.to) {
       return false;
     }
