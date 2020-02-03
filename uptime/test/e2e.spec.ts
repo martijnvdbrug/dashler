@@ -24,7 +24,7 @@ describe('Polling', () => {
     expect(disabled.length).toBe(0);
   });
 
-  test.only('Disabled test', async () => {
+  test.only('Disabled unit test', async () => {
     expect(BatchService.isDisabled(23, 7, 22)).toBe(false);
     expect(BatchService.isDisabled(23, 7, 23)).toBe(true);
     expect(BatchService.isDisabled(23, 7, 24)).toBe(true);
