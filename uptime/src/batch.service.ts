@@ -62,14 +62,23 @@ export class BatchService {
       }
       const now = new Date().getHours();
       const from = disabledHours.from.getHours();
-      let to = disabledHours.to.getHours();
-      if (to < from) {
-        to += 24; // Because 11h - 1h should be 11h - 25h
-      }
-      return now >= from && now < to;
+      const to = disabledHours.to.getHours();
+      return this.isDisabled(from, to, now);
     } catch (e) {
       console.error(`Error getting disabled hours for uptime ${uptimeId}`, e);
       return false;
     }
+  }
+
+  static isDisabled(from: number, to: number, now: number): boolean {
+    if (now === 0) {
+      now = 24;
+    }
+    if (from > to && now < to) { // 23 > 7 && 6 < 7
+      return now <= to;
+    } else if (from > to) { // 23 > 7, now=22
+      return now >= from;
+    }
+    return now >= from && now < to;
   }
 }
